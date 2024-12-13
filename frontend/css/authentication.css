@@ -1,0 +1,143 @@
+/* Authentication-specific styles */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.auth-content {
+  background-color: white;
+  padding: 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  margin-bottom: 10px;
+}
+
+.logo img {
+  height: 60px; /* Adjust size as needed */
+}
+
+.brand-name {
+  font-size: 2rem;
+  color: #003366;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.tagline {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-toggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.auth-toggle-btn {
+  background: none;
+  border: 1px solid #007bff;
+  color: #007bff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 0 5px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.auth-toggle-btn.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.input-icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.toggle-password {
+  background: none;
+  border: none;
+  color: #007bff;
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-password {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.auth-submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.auth-submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.terms-privacy {
+  margin-bottom: 20px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  color: #666;
+}
+
+.checkbox-label a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.checkbox-label a:hover {
+  text-decoration: underline;
+}
