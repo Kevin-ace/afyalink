@@ -1,0 +1,29 @@
+afyalink-backend/
+├── app/
+│   ├── __init__.py           # Application factory and configurations
+│   ├── models.py             # Database models (SQLAlchemy)
+│   ├── routes/
+│   │   ├── __init__.py       # Blueprint initialization
+│   │   ├── auth_routes.py    # User authentication routes
+│   │   ├── hospital_routes.py # Hospital-related routes
+│   │   ├── health_tips.py    # Health tips routes
+│   ├── services/
+│   │   ├── __init__.py       # Services initialization
+│   │   ├── auth_service.py   # User authentication logic
+│   │   ├── hospital_service.py # Hospital-specific logic
+│   │   ├── utils.py          # Reusable utility functions (e.g., JWT, hashing)
+│   ├── schemas/
+│   │   ├── __init__.py       # Schema initialization
+│   │   ├── auth_schema.py    # Request/response validation for auth routes
+│   │   ├── hospital_schema.py # Validation for hospital routes
+│   ├── config.py             # Environment-specific configurations
+│   ├── extensions.py         # Initialize Flask extensions (e.g., SQLAlchemy, JWT)
+│   ├── main.py               # Application entry point
+├── migrations/               # Database migrations
+├── tests/
+│   ├── __init__.py           # Testing configurations
+│   ├── test_auth.py          # Unit tests for authentication
+│   ├── test_hospitals.py     # Unit tests for hospital functionality
+├── .env                      # Environment variables
+├── requirements.txt          # Python dependencies
+├── README.md                 # Project documentation
