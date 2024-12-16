@@ -1,16 +1,30 @@
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from fastapi import FastAPI
+from app.routes import (
+    auth_routes, 
+    service_routes, 
+    insurance_routes, 
+    recommendation_routes,
+    facilities_router
+)
+from app.database import engine
+from app.models import Base
 
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
-from app import create_app
-from app.extensions import db
-from flask_migrate import Migrate
+app = FastAPI(
+    title="Afyalink",
+    description="Geolocation Health Facility Management System",
+    version="0.1.0"
+)
 
-app = create_app()
-migrate = Migrate(app, db)
+# Include route routers
+app.include_router(auth_routes, prefix="/auth", tags=["Authentication"])
+app.include_router(facilities_router, prefix="/facilities", tags=["Facilities"])
+app.include_router(service_routes, prefix="/services", tags=["Services"])
+app.include_router(insurance_routes, prefix="/insurances", tags=["Insurances"])
+app.include_router(recommendation_routes, prefix="/recommendations", tags=["Recommendations"])
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
+@app.get("/")
+async def root():
+    return {"message": "Welcome to Afyalink"}

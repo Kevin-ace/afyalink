@@ -1,65 +1,78 @@
-from flask import Blueprint, request, jsonify
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from typing import Annotated
+
+from app.database import get_db
 from app.models import User
-from app.extensions import db
-from flask_jwt_extended import create_access_token, jwt_required
-from werkzeug.security import generate_password_hash, check_password_hash
+from app.schemas import UserRegistration, UserCredentials, TokenResponse
+from app.auth import (
+    create_access_token, 
+    verify_password, 
+    get_password_hash
+)
 
-auth = Blueprint('auth', __name__)
+router = APIRouter()
 
-# User Registration
-@auth.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-
+@router.post("/register", response_model=TokenResponse)
+async def register_user(
+    user_data: UserRegistration, 
+    db: Session = Depends(get_db)
+):
+    """
+    User registration endpoint
+    """
     # Check if user already exists
-    if User.query.filter_by(email=email).first():
-        return jsonify({"message": "Email already exists"}), 400
+    existing_user = db.query(User).filter(
+        (User.email == user_data.email) | 
+        (User.username == user_data.username)
+    ).first()
+    
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Username or email already registered"
+        )
+    
+    # Create new user
+    new_user = User(
+        username=user_data.username,
+        email=user_data.email,
+        password_hash=get_password_hash(user_data.password),
+        is_active=True
+    )
+    
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    # Generate access token
+    access_token = create_access_token(
+        data={"sub": str(new_user.id)}
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
 
-    # Hash the password
-    password_hash = generate_password_hash(password)
-
-    new_user = User(username=username, email=email, password_hash=password_hash)
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({"message": "User registered successfully"}), 201
-
-# User Login
-@auth.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
-
-    user = User.query.filter_by(email=email).first()
-
-    # Check if user exists and password is correct
-    if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({"message": "Invalid email or password"}), 401
-
-    # Create JWT token
-    access_token = create_access_token(identity=user.id)
-
-    return jsonify({"access_token": access_token}), 200
-
-
-
-
-# from flask import Blueprint, request, jsonify
-# from app.services.auth_service import register_user, login_user
-
-# auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
-
-# @auth_bp.route('/register', methods=['POST'])
-# def register():
-#     data = request.json
-#     return register_user(data)
-
-# @auth_bp.route('/login', methods=['POST'])
-# def login():
-#     data = request.json
-#     return login_user(data)
+@router.post("/login", response_model=TokenResponse)
+async def user_login(
+    form_data: OAuth2PasswordRequestForm = Depends(), 
+    db: Session = Depends(get_db)
+):
+    """
+    User login endpoint
+    """
+    user = db.query(User).filter(User.email == form_data.username).first()
+    
+    if not user or not verify_password(form_data.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    
+    # Generate access token
+    access_token = create_access_token(
+        data={"sub": str(user.id)}
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
