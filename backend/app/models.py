@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Table, Text
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Table, Text, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from geoalchemy2 import Geometry
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -26,6 +27,19 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password_hash = Column(String)
     is_active = Column(Boolean, default=True)
+    
+    # New fields
+    first_name = Column(String)
+    last_name = Column(String)
+    id_number = Column(String, unique=True)
+    emergency_contact = Column(String)
+    insurance_details = Column(String, nullable=True)
+    sha_details = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Optional relationship with Insurance if needed
+    insurance_id = Column(Integer, ForeignKey('insurances.id'), nullable=True)
+    insurance = relationship('Insurance', backref='users')
 
 class Facility(Base):
     __tablename__ = 'facilities'
