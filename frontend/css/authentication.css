@@ -1,11 +1,22 @@
 /* Authentication-specific styles */
+:root {
+  --primary-color: #2c7da0;
+  --secondary-color: #61a5c2;
+  --light-color: #f0f9ff;
+  --text-color: #333;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-color);
+}
+
 .auth-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f8f9fa;
 }
 
 .auth-content {
@@ -21,6 +32,15 @@
   justify-content: center;
 }
 
+.auth-content.card {
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.auth-content.card:hover {
+  transform: translateY(-5px);
+}
+
 .logo {
   margin-bottom: 10px;
 }
@@ -31,7 +51,7 @@
 
 .brand-name {
   font-size: 2rem;
-  color: #003366;
+  color: var(--primary-color);
   font-weight: bold;
   margin-bottom: 10px;
   text-align: center;
@@ -39,7 +59,7 @@
 
 .tagline {
   font-size: 1.2rem;
-  color: #666;
+  color: var(--text-color);
   margin-bottom: 20px;
   text-align: center;
 }
@@ -52,8 +72,8 @@
 
 .auth-toggle-btn {
   background: none;
-  border: 1px solid #007bff;
-  color: #007bff;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
   padding: 10px 20px;
   border-radius: 5px;
   margin: 0 5px;
@@ -61,7 +81,7 @@
 }
 
 .auth-toggle-btn.active {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
 }
 
@@ -88,10 +108,20 @@
   border-radius: 5px;
 }
 
+.auth-input.form-control {
+  border-left: none;
+  box-shadow: none;
+}
+
+.auth-input.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(44, 125, 160, 0.25);
+}
+
 .toggle-password {
   background: none;
   border: none;
-  color: #007bff;
+  color: var(--primary-color);
 }
 
 .remember-forgot {
@@ -101,7 +131,7 @@
 }
 
 .forgot-password {
-  color: #007bff;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -110,7 +140,7 @@
 }
 
 .auth-submit-btn {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
   padding: 10px;
   border: none;
@@ -130,14 +160,20 @@
 .checkbox-label {
   display: flex;
   align-items: center;
-  color: #666;
+  color: var(--text-color);
 }
 
 .checkbox-label a {
-  color: #007bff;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
 .checkbox-label a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .auth-content.card {
+    margin-top: 20px;
+  }
 }

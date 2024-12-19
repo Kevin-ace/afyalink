@@ -597,3 +597,224 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = './dashboard.html';
     }
 });
+
+// Global variables for map and facilities
+let map;
+let healthFacilities = [];
+let markers = [];
+
+// Initialize the map
+function initMap() {
+  // Default to Nairobi coordinates
+  const defaultLocation = { lat: -1.2921, lng: 36.8219 };
+  
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: defaultLocation,
+    zoom: 10,
+    mapTypeId: 'roadmap'
+  });
+
+  // Load health facilities
+  loadHealthFacilities();
+
+  // Setup location search
+  const locationSearch = document.getElementById('location-search');
+  const searchButton = document.getElementById('search-location');
+  
+  searchButton.addEventListener('click', () => {
+    const address = locationSearch.value;
+    geocodeAddress(address);
+  });
+
+  // Try to get user's current location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        map.setCenter(userLocation);
+        
+        // Add a marker for user's location
+        new google.maps.Marker({
+          position: userLocation,
+          map: map,
+          title: 'Your Location',
+          icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+        });
+      },
+      () => {
+        console.log('Error: The Geolocation service failed.');
+      }
+    );
+  }
+}
+
+// Geocode an address and center the map
+function geocodeAddress(address) {
+  const geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ address: address }, (results, status) => {
+    if (status === 'OK') {
+      map.setCenter(results[0].geometry.location);
+      map.setZoom(12);
+      
+      // Clear existing markers
+      markers.forEach(marker => marker.setMap(null));
+      markers = [];
+
+      // Render facilities near the searched location
+      renderNearbyFacilities(
+        results[0].geometry.location.lat(), 
+        results[0].geometry.location.lng()
+      );
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+
+// Load health facilities from CSV
+async function loadHealthFacilities() {
+  try {
+    const response = await fetch('http://localhost:8000/health-facilities-csv');
+    const csvText = await response.text();
+    
+    // Parse CSV (simple implementation)
+    const rows = csvText.split('\n').slice(1); // Skip header
+    healthFacilities = rows
+      .map(row => {
+        const columns = row.split(',');
+        return {
+          name: columns[2],
+          latitude: parseFloat(columns[12]),
+          longitude: parseFloat(columns[13])
+        };
+      })
+      .filter(facility => 
+        !isNaN(facility.latitude) && 
+        !isNaN(facility.longitude)
+      );
+
+    // Render initial facilities
+    renderNearbyFacilities(-1.2921, 36.8219);
+  } catch (error) {
+    console.error('Error loading health facilities:', error);
+  }
+}
+
+// Render facilities near a given location
+function renderNearbyFacilities(lat, lng, radius = 50) {
+  // Clear existing markers
+  markers.forEach(marker => marker.setMap(null));
+  markers = [];
+
+  // Filter facilities within radius (approximately)
+  const nearbyFacilities = healthFacilities.filter(facility => {
+    const distance = calculateDistance(lat, lng, facility.latitude, facility.longitude);
+    return distance <= radius; // km
+  });
+
+  // Create markers for nearby facilities
+  nearbyFacilities.forEach(facility => {
+    const marker = new google.maps.Marker({
+      position: { lat: facility.latitude, lng: facility.longitude },
+      map: map,
+      title: facility.name,
+      icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+    });
+
+    const infoWindow = new google.maps.InfoWindow({
+      content: `<h6>${facility.name}</h6>`
+    });
+
+    marker.addListener('click', () => {
+      infoWindow.open(map, marker);
+    });
+
+    markers.push(marker);
+  });
+
+  console.log(`Found ${nearbyFacilities.length} facilities near the location`);
+}
+
+// Calculate distance between two points (Haversine formula)
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+  ; 
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  const distance = R * c; // Distance in km
+  return distance;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+
+// Initialize map when the page loads
+window.onload = initMap;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Daily Health Tips
+    const healthTips = [
+        "Drink at least 8 glasses of water daily to stay hydrated.",
+        "Get 7-9 hours of sleep each night for optimal health.",
+        "Incorporate 30 minutes of physical activity into your daily routine.",
+        "Eat a balanced diet rich in fruits, vegetables, and whole grains.",
+        "Practice stress management techniques like meditation or deep breathing.",
+        "Maintain good hand hygiene to prevent the spread of infections.",
+        "Regular health check-ups can help detect potential issues early.",
+        "Limit processed foods and focus on whole, nutritious meals.",
+        "Stay socially connected - good relationships support mental health.",
+        "Take breaks and stretch if you have a sedentary job.",
+        "Protect your skin from sun damage by using sunscreen daily.",
+        "Practice good posture to prevent back and neck strain.",
+        "Include protein in every meal to support muscle health.",
+        "Reduce sugar and salt intake for better overall health.",
+        "Stay mentally active by learning new skills or solving puzzles."
+    ];
+
+    // Update Daily Health Tip
+    const healthTipElement = document.getElementById('daily-health-tip');
+    if (healthTipElement) {
+        const today = new Date();
+        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+        healthTipElement.textContent = healthTips[dayOfYear % healthTips.length];
+    }
+
+    // Active Page and Dropdown Handling
+    const navHandlers = {
+        activePageHighlight: () => {
+            const currentPath = location.pathname;
+            document.querySelectorAll('.navbar .nav-link').forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === currentPath);
+            });
+        },
+        dropdownFunctionality: () => {
+            const actionMap = {
+                'Find Hospitals': () => alert('Hospital Finder Coming Soon!'),
+                'Book Appointment': () => alert('Appointment Booking Coming Soon!'),
+                'BMI Calculator': () => alert('BMI Calculator Coming Soon!'),
+                'Emergency Services': () => alert('Emergency Services Coming Soon!'),
+                'Medication Tracker': () => alert('Medication Tracker Coming Soon!'),
+                'Health Diary': () => alert('Health Diary Coming Soon!')
+            };
+
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const action = actionMap[item.textContent];
+                    action && action();
+                });
+            });
+        }
+    };
+
+    // Initialize Navigation Handlers
+    Object.values(navHandlers).forEach(handler => handler());
+});

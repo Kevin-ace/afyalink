@@ -1,4 +1,17 @@
 /* Dashboard-specific styles */
+:root {
+  --primary-color: #2c7da0;
+  --secondary-color: #61a5c2;
+  --light-color: #f0f9ff;
+  --text-color: #333;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-color);
+  color: var(--text-color);
+}
+
 .main-content {
     padding: 20px 0;
     background-color: #ffffff;
@@ -9,6 +22,10 @@
     text-align: center;
     padding: 20px;
     background-color: #eef2f7;
+}
+
+.search-section .input-group {
+  max-width: 100%;
 }
 
 .search-title {
@@ -36,9 +53,66 @@
     padding: 20px;
 }
 
+.map-section .card {
+  width: 100%;
+  height: auto;
+  min-height: 500px;
+}
+
+.map-container {
+  height: 450px;
+  width: 100%;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+@media (min-width: 1200px) {
+  .map-section .card {
+    min-height: 600px;
+  }
+  
+  .map-container {
+    height: 550px;
+  }
+}
+
+@media (max-width: 768px) {
+  .map-section .card {
+    min-height: 350px;
+  }
+  
+  .map-container {
+    height: 300px;
+  }
+}
+
+.map-container::before {
+  content: 'Loading map...';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
 .map-container iframe {
     border-radius: 5px;
     border: none;
+}
+
+#location-search {
+  max-width: 300px;
+  width: 100%;
 }
 
 .hospital-cards {
@@ -83,6 +157,109 @@
     font-size: 0.9rem;
 }
 
+.quick-actions .card {
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.quick-actions .card:hover {
+  transform: scale(1.05);
+}
+
+.quick-action-card i {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.health-insights .card {
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.insight-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.insight-item:hover {
+  background-color: var(--light-color);
+}
+
+.insight-item i {
+  color: var(--primary-color);
+  margin-right: 15px;
+  font-size: 1.5rem;
+}
+
+.daily-health-tip {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.daily-health-tip i {
+    color: #ff6b6b;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.daily-health-tip h6 {
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.daily-health-tip p {
+    font-style: italic;
+    color: #666;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .quick-actions .card {
+    margin-bottom: 1rem;
+  }
+  
+  .quick-action-card i {
+    font-size: 1.5rem;
+  }
+  
+  .quick-action-card .card-title {
+    font-size: 0.9rem;
+  }
+  
+  .section-title {
+    font-size: 1.4rem;
+  }
+  
+  .insight-item {
+    padding: 8px;
+  }
+  
+  .insight-item i {
+    font-size: 1.2rem;
+    margin-right: 10px;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .quick-action-card i {
+    font-size: 2.5rem;
+  }
+}
+
 /* Hide the menu toggle button on larger screens */
 .menu-toggle {
     display: none;
@@ -118,4 +295,3 @@
       display: flex;
     }
   }
-  

@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from app.routes import (
     auth_routes, 
     service_routes, 
@@ -79,3 +80,19 @@ app.include_router(recommendation_routes, prefix="/recommendations", tags=["Reco
 @app.get("/")
 async def root():
     return {"message": "Welcome to Afyalink"}
+
+@app.get("/health-facilities-csv")
+async def get_health_facilities_csv():
+    """
+    Endpoint to serve the Health_facilities.csv file
+    """
+    csv_path = os.path.join(os.path.dirname(__file__), 'Health_facilities.csv')
+    
+    if not os.path.exists(csv_path):
+        raise HTTPException(status_code=404, detail="CSV file not found")
+    
+    return FileResponse(
+        path=csv_path, 
+        media_type='text/csv', 
+        filename='Health_facilities.csv'
+    )

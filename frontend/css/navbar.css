@@ -1,0 +1,104 @@
+/* Navbar Active State Highlighting */
+.navbar .nav-item .nav-link.active {
+    color: var(--primary-color) !important;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+/* Dropdown Styling */
+.navbar .dropdown-menu {
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.navbar .dropdown-item {
+    transition: all 0.3s ease;
+}
+
+.navbar .dropdown-item:hover {
+    background-color: var(--light-color);
+    color: var(--primary-color);
+}
+
+/* Notifications Modal Styling */
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+/* Compact Navbar Styling */
+.navbar {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.navbar .nav-link {
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem !important;
+}
+
+.navbar .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.navbar .navbar-brand {
+    font-size: 1.1rem;
+}
+
+.navbar .navbar-brand img {
+    max-height: 35px;
+    max-width: 35px;
+}
+
+@media (max-width: 991px) {
+    .navbar .nav-link {
+        text-align: center;
+    }
+    
+    .navbar .btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+/* Navbar Spacing Adjustment */
+body {
+    padding-top: 80px; /* Adjust based on navbar height */
+}
+
+@media (max-width: 991px) {
+    .navbar .nav-item {
+        text-align: center;
+    }
+    
+    .navbar .btn {
+        margin: 10px 0;
+    }
+    
+    body {
+        padding-top: 60px; /* Smaller padding for mobile */
+    }
+}
+
+/* Ensure content is not hidden behind fixed navbar */
+.container, .container-fluid {
+    margin-top: 20px;
+}
+
+/* Adjust scrolling for anchor links */
+:target {
+    scroll-padding-top: 80px;
+}

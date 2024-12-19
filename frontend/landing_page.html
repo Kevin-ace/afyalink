@@ -3,57 +3,164 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AfyaLink - Home</title>
+    <title>AfyaLink - Your Healthcare Companion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/landing.css" />
+    <link rel="stylesheet" href="./css/navbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   </head>
   <body>
-    <header class="header">
-      <div class="logo">
-        <img
-          src="./assets/icons/logos.png"
-          alt="AfyaLink Logo"
-          class="logo-img"
-        />
-        <span class="brand-name">AfyaLink</span>
-      </div>
-      <nav>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
+    <header class="header container-fluid">
+      <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2">
+        <div class="container">
+          <a class="navbar-brand d-flex align-items-center me-4" href="landing_page.html">
+            <img src="./assets/icons/logos.png" alt="AfyaLink Logo" width="35" height="35" class="me-2">
+            <span class="brand-name fw-bold">AfyaLink</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item me-2">
+                <a class="nav-link px-2" href="#features">
+                  <i class="fas fa-home me-1"></i>Features
+                </a>
+              </li>
+              <li class="nav-item dropdown me-2">
+                <a class="nav-link dropdown-toggle px-2" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-hospital me-1"></i>Services
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                  <li><a class="dropdown-item" href="#">Hospital Finder</a></li>
+                  <li><a class="dropdown-item" href="#">Appointment Booking</a></li>
+                  <li><a class="dropdown-item" href="#">Health Resources</a></li>
+                </ul>
+              </li>
+              <li class="nav-item me-2">
+                <a class="nav-link px-2" href="#about">
+                  <i class="fas fa-info-circle me-1"></i>About
+                </a>
+              </li>
+              <li class="nav-item me-2">
+                <a class="nav-link px-2" href="#contact">
+                  <i class="fas fa-envelope me-1"></i>Contact
+                </a>
+              </li>
+            </ul>
+            <div class="d-flex align-items-center">
+              <a href="login.html" class="btn btn-outline-primary me-2 btn-sm">
+                <i class="fas fa-sign-in-alt me-1"></i>Login
+              </a>
+              <a href="register.html" class="btn btn-primary btn-sm">
+                <i class="fas fa-user-plus me-1"></i>Register
+              </a>
+            </div>
+          </div>
+        </div>
       </nav>
     </header>
-    <main>
-      <section class="banner">
-        <h1>Your Gateway to Quality Healthcare</h1>
-        <button class="cta-button">Find Hospitals Near You</button>
+
+    <main class="container py-5">
+      <section class="hero-section mb-6">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6 order-2 order-lg-1">
+            <div class="hero-content pe-lg-5">
+              <h1 class="display-4 fw-bold mb-3 text-primary">Your Comprehensive Healthcare Navigator</h1>
+              <p class="lead text-muted mb-4">Empowering you with personalized health insights, seamless hospital connections, and proactive wellness support.</p>
+              <div class="d-flex gap-3">
+                <a href="#" class="btn btn-primary btn-lg">
+                  <i class="fas fa-hospital me-2"></i>Find Hospitals
+                </a>
+                <a href="#" class="btn btn-outline-secondary btn-lg">
+                  <i class="fas fa-book-medical me-2"></i>Health Resources
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2">
+            <div class="hero-image text-center">
+              <img src="./assets/images/healthcare-hero.svg" alt="Healthcare Navigation" class="img-fluid rounded-3 shadow-lg">
+            </div>
+          </div>
+        </div>
       </section>
-      <div class="search-bar">
-        <input type="text" placeholder="Search for hospitals or clinics..." />
-        <button>Search</button>
-      </div>
-      <section class="features">
-        <div class="feature">
-          <h3>Hospital Search</h3>
-          <p>Find hospitals near you quickly and easily.</p>
-        </div>
-        <div class="feature">
-          <h3>Insurance Recommendations</h3>
-          <p>Get hospitals based on your insurance.</p>
-        </div>
-        <div class="feature">
-          <h3>Health Tips</h3>
-          <p>Stay healthy with expert advice.</p>
+
+      <section id="features" class="features py-6">
+        <div class="container">
+          <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold mb-3">Our Key Features</h2>
+            <p class="lead text-muted">Innovative solutions designed to transform your healthcare journey</p>
+          </div>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body text-center p-4">
+                  <div class="feature-icon mb-3">
+                    <i class="fas fa-map-marker-alt fa-3x text-primary"></i>
+                  </div>
+                  <h3 class="card-title h4 mb-3">Intelligent Hospital Finder</h3>
+                  <p class="card-text text-muted">Discover nearby healthcare facilities tailored to your specific needs and preferences.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body text-center p-4">
+                  <div class="feature-icon mb-3">
+                    <i class="fas fa-shield-alt fa-3x text-success"></i>
+                  </div>
+                  <h3 class="card-title h4 mb-3">Insurance Integration</h3>
+                  <p class="card-text text-muted">Seamlessly navigate healthcare options compatible with your insurance coverage.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body text-center p-4">
+                  <div class="feature-icon mb-3">
+                    <i class="fas fa-heartbeat fa-3x text-danger"></i>
+                  </div>
+                  <h3 class="card-title h4 mb-3">Personalized Health Insights</h3>
+                  <p class="card-text text-muted">Receive daily health tips, wellness recommendations, and proactive health guidance.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
-    <footer class="footer">
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="privacy.html">Privacy Policy</a>
-      <div class="social-media">
-        <a href="#">Facebook</a>
-        <a href="#">Twitter</a>
+
+    <footer class="footer container-fluid bg-light py-5">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="footer-brand mb-3">
+              <h4 class="fw-bold text-primary">AfyaLink</h4>
+              <p class="text-muted">Revolutionizing healthcare access through technology and personalized support.</p>
+            </div>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div class="footer-links mb-3">
+              <a href="about.html" class="text-muted me-3">About</a>
+              <a href="contact.html" class="text-muted me-3">Contact</a>
+              <a href="privacy.html" class="text-muted">Privacy Policy</a>
+            </div>
+            <div class="social-icons">
+              <a href="#" class="text-muted me-3"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="text-muted me-3"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="text-muted"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-4 pt-3 border-top">
+          <p class="text-muted mb-0">&copy; 2024 AfyaLink. All Rights Reserved.</p>
+        </div>
       </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
