@@ -4,38 +4,97 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AfyaLink - Your Healthcare Companion</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta
+      name="description"
+      content="AfyaLink is your healthcare companion, providing hospital finder, appointment booking, and health resources."
+    />
+    <meta
+      name="keywords"
+      content="healthcare, hospital finder, appointment booking, health resources"
+    />
+    <meta name="author" content="AfyaLink Team" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/landing.css" />
-    <link rel="stylesheet" href="./css/navbar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="./css/navbar.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
   </head>
   <body>
     <header class="header container-fluid">
       <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2">
         <div class="container">
-          <a class="navbar-brand d-flex align-items-center me-4" href="landing_page.html">
-            <img src="./assets/icons/logos.png" alt="AfyaLink Logo" width="35" height="35" class="me-2">
+          <a
+            class="navbar-brand d-flex align-items-center me-4"
+            href="landing_page.html"
+          >
+            <img
+              src="./assets/icons/logos.png"
+              alt="AfyaLink Logo"
+              width="35"
+              height="35"
+              class="me-2"
+            />
             <span class="brand-name fw-bold">AfyaLink</span>
           </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item me-2">
-                <a class="nav-link px-2" href="#features">
+                <a class="nav-link px-2" href="#features" aria-label="Features">
                   <i class="fas fa-home me-1"></i>Features
                 </a>
               </li>
               <li class="nav-item dropdown me-2">
-                <a class="nav-link dropdown-toggle px-2" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button
+                  class="nav-link dropdown-toggle px-2 btn btn-link"
+                  id="servicesDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  aria-label="Services"
+                >
                   <i class="fas fa-hospital me-1"></i>Services
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-                  <li><a class="dropdown-item" href="#">Hospital Finder</a></li>
-                  <li><a class="dropdown-item" href="#">Appointment Booking</a></li>
-                  <li><a class="dropdown-item" href="#">Health Resources</a></li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      aria-label="Hospital Finder"
+                      >Hospital Finder</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      aria-label="Appointment Booking"
+                      >Appointment Booking</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      aria-label="Health Resources"
+                      >Health Resources</a
+                    >
+                  </li>
                 </ul>
               </li>
               <li class="nav-item me-2">
@@ -67,8 +126,13 @@
         <div class="row align-items-center g-5">
           <div class="col-lg-6 order-2 order-lg-1">
             <div class="hero-content pe-lg-5">
-              <h1 class="display-4 fw-bold mb-3 text-primary">Your Comprehensive Healthcare Navigator</h1>
-              <p class="lead text-muted mb-4">Empowering you with personalized health insights, seamless hospital connections, and proactive wellness support.</p>
+              <h1 class="display-4 fw-bold mb-3 text-primary">
+                Your Comprehensive Healthcare Navigator
+              </h1>
+              <p class="lead text-muted mb-4">
+                Empowering you with personalized health insights, seamless
+                hospital connections, and proactive wellness support.
+              </p>
               <div class="d-flex gap-3">
                 <a href="#" class="btn btn-primary btn-lg">
                   <i class="fas fa-hospital me-2"></i>Find Hospitals
@@ -81,7 +145,11 @@
           </div>
           <div class="col-lg-6 order-1 order-lg-2">
             <div class="hero-image text-center">
-              <img src="./assets/images/healthcare-hero.svg" alt="Healthcare Navigation" class="img-fluid rounded-3 shadow-lg">
+              <img
+                src="./assets/icons/logos.png"
+                alt="Healthcare Navigation"
+                class="img-fluid rounded-3 shadow-lg"
+              />
             </div>
           </div>
         </div>
@@ -89,41 +157,65 @@
 
       <section id="features" class="features py-6">
         <div class="container">
+          <!-- Header Section -->
           <div class="text-center mb-5">
             <h2 class="display-6 fw-bold mb-3">Our Key Features</h2>
-            <p class="lead text-muted">Innovative solutions designed to transform your healthcare journey</p>
-          </div>
-          <div class="row g-4">
-            <div class="col-md-4">
-              <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-body text-center p-4">
-                  <div class="feature-icon mb-3">
-                    <i class="fas fa-map-marker-alt fa-3x text-primary"></i>
+            <p class="lead text-muted">
+              Innovative solutions designed to transform your healthcare journey
+            </p>
+
+            <!-- Cards Section -->
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div
+                  class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden"
+                >
+                  <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                      <i class="fas fa-map-marker-alt fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title h4 mb-3">
+                      Intelligent Hospital Finder
+                    </h3>
+                    <p class="card-text text-muted">
+                      Discover nearby healthcare facilities tailored to your
+                      specific needs and preferences.
+                    </p>
                   </div>
-                  <h3 class="card-title h4 mb-3">Intelligent Hospital Finder</h3>
-                  <p class="card-text text-muted">Discover nearby healthcare facilities tailored to your specific needs and preferences.</p>
                 </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-body text-center p-4">
-                  <div class="feature-icon mb-3">
-                    <i class="fas fa-shield-alt fa-3x text-success"></i>
+              <div class="col-md-4">
+                <div
+                  class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden"
+                >
+                  <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                      <i class="fas fa-shield-alt fa-3x text-success"></i>
+                    </div>
+                    <h3 class="card-title h4 mb-3">Insurance Integration</h3>
+                    <p class="card-text text-muted">
+                      Seamlessly navigate healthcare options compatible with
+                      your insurance coverage.
+                    </p>
                   </div>
-                  <h3 class="card-title h4 mb-3">Insurance Integration</h3>
-                  <p class="card-text text-muted">Seamlessly navigate healthcare options compatible with your insurance coverage.</p>
                 </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-body text-center p-4">
-                  <div class="feature-icon mb-3">
-                    <i class="fas fa-heartbeat fa-3x text-danger"></i>
+              <div class="col-md-4">
+                <div
+                  class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden"
+                >
+                  <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                      <i class="fas fa-heartbeat fa-3x text-danger"></i>
+                    </div>
+                    <h3 class="card-title h4 mb-3">
+                      Personalized Health Insights
+                    </h3>
+                    <p class="card-text text-muted">
+                      Receive daily health tips, wellness recommendations, and
+                      proactive health guidance.
+                    </p>
                   </div>
-                  <h3 class="card-title h4 mb-3">Personalized Health Insights</h3>
-                  <p class="card-text text-muted">Receive daily health tips, wellness recommendations, and proactive health guidance.</p>
                 </div>
               </div>
             </div>
@@ -138,7 +230,10 @@
           <div class="col-md-6">
             <div class="footer-brand mb-3">
               <h4 class="fw-bold text-primary">AfyaLink</h4>
-              <p class="text-muted">Revolutionizing healthcare access through technology and personalized support.</p>
+              <p class="text-muted">
+                Revolutionizing healthcare access through technology and
+                personalized support.
+              </p>
             </div>
           </div>
           <div class="col-md-6 text-md-end">
@@ -148,19 +243,30 @@
               <a href="privacy.html" class="text-muted">Privacy Policy</a>
             </div>
             <div class="social-icons">
-              <a href="#" class="text-muted me-3"><i class="fab fa-facebook-f"></i></a>
-              <a href="#" class="text-muted me-3"><i class="fab fa-twitter"></i></a>
-              <a href="#" class="text-muted"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="text-muted me-3"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="text-muted me-3"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="text-muted"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
             </div>
           </div>
         </div>
         <div class="text-center mt-4 pt-3 border-top">
-          <p class="text-muted mb-0">&copy; 2024 AfyaLink. All Rights Reserved.</p>
+          <p class="text-muted mb-0">
+            &copy; 2024 AfyaLink. All Rights Reserved.
+          </p>
         </div>
       </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      defer
+    ></script>
     <script src="script.js"></script>
   </body>
 </html>
