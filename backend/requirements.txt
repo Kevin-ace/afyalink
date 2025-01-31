@@ -1,13 +1,24 @@
+# Core Web Framework
 fastapi==0.95.1
 uvicorn==0.22.0
-sqlalchemy==2.0.16
-pydantic==1.10.7
-passlib==1.7.4
+
+# Database
+sqlalchemy==1.4.41
+alembic==1.10.3
+
+# Authentication
 python-jose==3.3.0
-python-multipart==0.0.9
-psycopg2-binary==2.9.9
-geoalchemy2==0.14.2
-python-dotenv==1.0.0
+passlib==1.7.4
+python-multipart==0.0.6
+fastapi-jwt-auth==0.5.0
+
+# Geospatial (optional, if needed)
+shapely==2.0.1
+
+# Other dependencies
+pydantic==1.10.7
+psycopg2-binary==2.9.6
 email-validator==2.1.1
-typing-extensions==4.9.0
-shapely==2.0.2
+
+# Optional: if you need additional features
+python-dotenv==1.0.0

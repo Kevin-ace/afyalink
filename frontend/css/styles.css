@@ -66,3 +66,69 @@ input:focus {
     font-size: 1.5rem;
     font-weight: bold;
 }
+
+/* Responsive Design Media Queries */
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 576px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    .responsive-flex {
+        flex-direction: column;
+    }
+    
+    .responsive-text {
+        text-align: center;
+    }
+    
+    .responsive-margin {
+        margin: 10px 0;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 577px) and (max-width: 992px) {
+    body {
+        font-size: 16px;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+    
+    .responsive-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Large devices (desktops, 993px and up) */
+@media (min-width: 993px) {
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .responsive-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Universal responsive utilities */
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.flex-responsive {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.text-responsive {
+    font-size: clamp(14px, 2vw, 18px);
+}

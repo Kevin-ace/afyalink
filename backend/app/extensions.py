@@ -1,5 +1,9 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
+from fastapi_jwt_auth import AuthJWT
+from pydantic import BaseModel
 
-db = SQLAlchemy()
-jwt = JWTManager()
+class Settings(BaseModel):
+    authjwt_secret_key: str = "your-secret-key"  # Replace with a secure secret key
+
+@AuthJWT.load_config
+def get_config():
+    return Settings()

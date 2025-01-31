@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Table, Text, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from geoalchemy2 import Geometry
 from datetime import datetime
 
 Base = declarative_base()
@@ -48,10 +47,9 @@ class Facility(Base):
     name = Column(String, index=True)
     description = Column(String)
     
-    # Specific geospatial columns
+    # Standard geospatial columns
     latitude = Column(Float)
     longitude = Column(Float)
-    location = Column(Geometry('POINT'))
     
     # Additional fields
     address = Column(String)
@@ -69,6 +67,9 @@ class Facility(Base):
         secondary=facility_insurance_association, 
         back_populates='facilities'
     )
+
+    def __repr__(self):
+        return f"<Facility(id={self.id}, name='{self.name}', location=({self.latitude}, {self.longitude}))>"
 
 class Service(Base):
     __tablename__ = 'services'
