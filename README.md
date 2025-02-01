@@ -1,42 +1,64 @@
-# AfyaLink: Your Comprehensive Healthcare Companion 🏥
+# AfyaLink: Revolutionizing Healthcare Accessibility 🏥🌍
 
-## Project Overview
-AfyaLink is an innovative healthcare navigation platform designed to simplify and enhance your healthcare experience by providing personalized, accessible health services.
+## 🌟 Project Overview
+AfyaLink is an innovative digital platform designed to transform healthcare accessibility in Kenya by providing comprehensive, user-friendly healthcare facility information and navigation services.
 
-### Key Features
-- 🗺️ Intelligent Hospital Finder
-- 🛡️ Insurance Integration Support
-- 💡 Personalized Health Insights
+## 🎯 Mission
+Empower individuals to make informed healthcare decisions by offering real-time, accurate, and easily accessible information about medical facilities.
 
-## Technology Stack
-- **Frontend**: HTML5, CSS3, Bootstrap 5
-- **Backend**: Python (FastAPI)
-- **Design**: Responsive, Mobile-First Approach
+## ✨ Key Features
+- 🗺️ Intelligent Healthcare Facility Finder
+- 🔍 Advanced Search and Filtering
+- 🏥 Detailed Facility Profiles
+- 🛡️ Secure User Authentication
+- 📊 Interactive Healthcare Dashboard
 
-## Getting Started
+## 🚀 Technology Stack
+### Frontend
+- HTML5
+- CSS3
+- JavaScript
+- Responsive Design Principles
 
-### Prerequisites
+### Backend
+- Python (Flask Framework)
+- SQLAlchemy ORM
+- PostgreSQL Database
+- RESTful API Design
+
+## 🛠️ Prerequisites
 - Python 3.8+
 - pip
-- Node.js (for frontend dependencies)
+- Virtual Environment
+- PostgreSQL
 
-### Installation
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/afyalink.git
-cd afyalink
+
+## 📋 Project Structure
+```
+afyalink/
+│
+├── backend/
+│   ├── app/
+│   │   ├── models.py
+│   │   ├── routes/
+│   │   └── services/
+│   ├── tests/
+│   └── requirements.txt
+│
+└── frontend/
+    ├── index.html
+    ├── css/
+    └── js/
 ```
 
-2. Install backend dependencies
-```bash
-pip install -r requirements.txt
-```
 
-3. Run the application
-```bash
-python backend/app/main.py
-```
+## 📞 Contact
+- **Project Lead:** Kevin Kipruto
+- **Email:** [kevinkipruto83@gmail.com]
+- **GitHub:** [https://github.com/Kevin-ace/afyalink]
 
-## Contact
-- Project Lead: Kevin Kipruto
-- Project code Link: [https://github.com/Kevin-ace/afyalink.git]
+
+## 🙏 Acknowledgements
+- Kenya Health Sector
+- Open Source Community
+- Our Dedicated Contributors
