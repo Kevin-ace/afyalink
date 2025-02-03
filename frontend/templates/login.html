@@ -80,6 +80,7 @@
                 <input type="checkbox" class="form-check-input" id="rememberMe">
                 <label class="form-check-label" for="rememberMe">Remember me</label>
             </div>
+            <div id="error-message"></div>
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt me-2"></i>Login
@@ -98,23 +99,56 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.querySelector('form');
-            
-            loginForm.addEventListener('submit', function(e) {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const errorMessageDiv = document.getElementById('error-message');
+
+            loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
-                // Simulate login validation (replace with actual backend validation)
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
+                // Reset previous error messages
+                if (errorMessageDiv) errorMessageDiv.textContent = '';
                 
-                // Basic validation (replace with proper backend authentication)
-                if (username && password) {
-                    // Set login state in localStorage
-                    localStorage.setItem('isLoggedIn', 'true');
-                    
-                    // Redirect to dashboard
-                    window.location.href = 'dashboard.html';
-                } else {
-                    alert('Invalid username or password');
+                try {
+                    const response = await fetch('http://localhost:8000/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: usernameInput.value,
+                            password: passwordInput.value
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Store token and user info
+                        localStorage.setItem('access_token', data.access_token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        
+                        // Redirect to dashboard
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        // Handle login errors
+                        const errorMessage = data.detail || 'Login failed';
+                        if (errorMessageDiv) {
+                            errorMessageDiv.textContent = errorMessage;
+                            errorMessageDiv.style.color = 'red';
+                        } else {
+                            alert(errorMessage);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    if (errorMessageDiv) {
+                        errorMessageDiv.textContent = 'Network error. Please try again.';
+                        errorMessageDiv.style.color = 'red';
+                    } else {
+                        alert('Network error. Please try again.');
+                    }
                 }
             });
         });

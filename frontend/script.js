@@ -1,31 +1,82 @@
-// Authentication Service
-const AUTH_API_BASE_URL = 'http://localhost:8000/auth';
+// Configuration Management
+const CONFIG = {
+    API_BASE_URL: 'http://localhost:8000',
+    ENDPOINTS: {
+        AUTH: '/auth',
+        SERVICES: '/services',
+        INSURANCE: '/insurance',
+        RECOMMENDATIONS: '/recommendations',
+        FACILITIES: '/facilities'
+    },
+    TOKEN_STORAGE: {
+        ACCESS_TOKEN: 'access_token',
+        TOKEN_TYPE: 'token_type'
+    }
+};
 
+// Enhanced Error Handling
+class APIError extends Error {
+    constructor(message, status, details = null) {
+        super(message);
+        this.name = 'APIError';
+        this.status = status;
+        this.details = details;
+    }
+}
+
+// Authentication Service with Enhanced Error Handling
 class AuthService {
-    static async login(email, password) {
-        try {
-            const response = await fetch(`${AUTH_API_BASE_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    username: email,
-                    password: password
-                })
-            });
+    static async makeRequest(endpoint, method, body = null, requireAuth = false) {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
 
+        if (requireAuth) {
+            const token = localStorage.getItem(CONFIG.TOKEN_STORAGE.ACCESS_TOKEN);
+            if (!token) {
+                throw new APIError('No authentication token found', 401);
+            }
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const config = {
+            method: method,
+            headers: headers,
+            body: body ? JSON.stringify(body) : null
+        };
+
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, config);
+            
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Login failed');
+                throw new APIError(
+                    errorData.detail || 'Request failed', 
+                    response.status, 
+                    errorData
+                );
             }
 
-            const data = await response.json();
-            localStorage.setItem('token', data.access_token);
-            localStorage.setItem('tokenType', data.token_type);
+            return await response.json();
+        } catch (error) {
+            DebugLogger.error('API Request Failed', error);
+            throw error;
+        }
+    }
+
+    static async login(email, password) {
+        try {
+            const data = await this.makeRequest(
+                `${CONFIG.ENDPOINTS.AUTH}/login`, 
+                'POST', 
+                { username: email, password: password }
+            );
+
+            localStorage.setItem(CONFIG.TOKEN_STORAGE.ACCESS_TOKEN, data.access_token);
+            localStorage.setItem(CONFIG.TOKEN_STORAGE.TOKEN_TYPE, data.token_type);
+            
             return data;
         } catch (error) {
-            console.error('Login error:', error);
             throw error;
         }
     }
@@ -70,34 +121,17 @@ class AuthService {
                 ...(shaDetails && { sha_details: shaDetails })
             };
 
-            const response = await fetch(`${AUTH_API_BASE_URL}/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Request-ID': this.generateRequestId()
-                },
-                body: JSON.stringify(registrationPayload)
-            });
+            const response = await this.makeRequest(
+                `${CONFIG.ENDPOINTS.AUTH}/register`, 
+                'POST', 
+                registrationPayload
+            );
 
             // Log detailed response information
             DebugLogger.log('Registration Response', {
                 status: response.status,
                 headers: Object.fromEntries(response.headers.entries())
             });
-
-            // Handle non-successful responses
-            if (!response.ok) {
-                const errorData = await response.json();
-                DebugLogger.error('Registration failed', errorData);
-                
-                // Extract specific error details
-                const errorMessage = 
-                    errorData.detail?.message || 
-                    errorData.detail || 
-                    'Registration failed due to an unknown error';
-                
-                throw new Error(errorMessage);
-            }
 
             // Process successful registration
             const data = await response.json();
@@ -127,18 +161,18 @@ class AuthService {
     }
 
     static logout() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('tokenType');
+        localStorage.removeItem(CONFIG.TOKEN_STORAGE.ACCESS_TOKEN);
+        localStorage.removeItem(CONFIG.TOKEN_STORAGE.TOKEN_TYPE);
         window.location.href = 'login.html';
     }
 
     static isAuthenticated() {
-        return !!localStorage.getItem('token');
+        return !!localStorage.getItem(CONFIG.TOKEN_STORAGE.ACCESS_TOKEN);
     }
 
     static getAuthHeader() {
-        const token = localStorage.getItem('token');
-        const tokenType = localStorage.getItem('tokenType') || 'Bearer';
+        const token = localStorage.getItem(CONFIG.TOKEN_STORAGE.ACCESS_TOKEN);
+        const tokenType = localStorage.getItem(CONFIG.TOKEN_STORAGE.TOKEN_TYPE) || 'Bearer';
         return token ? { 'Authorization': `${tokenType} ${token}` } : {};
     }
 
@@ -239,7 +273,7 @@ class DebugLogger {
     static sendErrorToServer(message, error) {
         // Optional: Send error to a logging service or backend
         try {
-            fetch(`${AUTH_API_BASE_URL}/log-error`, {
+            fetch(`${CONFIG.API_BASE_URL}/log-error`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -350,7 +384,7 @@ class RegistrationManager {
             if (!value) return;
 
             try {
-                const response = await fetch(`${AUTH_API_BASE_URL}/check-${field}`, {
+                const response = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.AUTH}/check-${field}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -592,7 +626,7 @@ window.AuthService = AuthService;
 
 // Check if user is already logged in
 document.addEventListener('DOMContentLoaded', () => {
-    const authToken = localStorage.getItem('token');
+    const authToken = localStorage.getItem(CONFIG.TOKEN_STORAGE.ACCESS_TOKEN);
     if (authToken && window.location.pathname.includes('./login.html')) {
         window.location.href = './dashboard.html';
     }
@@ -677,7 +711,7 @@ function geocodeAddress(address) {
 // Load health facilities from CSV
 async function loadHealthFacilities() {
   try {
-    const response = await fetch('http://localhost:8000/health-facilities-csv');
+    const response = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.FACILITIES}/health-facilities-csv`);
     const csvText = await response.text();
     
     // Parse CSV (simple implementation)

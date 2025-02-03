@@ -13,6 +13,10 @@ from app.models import Base
 import logging
 import logging.handlers
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -54,14 +58,11 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# CORS Configuration
-origins = [
-    "http://localhost:5500",  # Live Server default port
-    "http://127.0.0.1:5500",
-    "http://localhost:8000",  # Backend server
-    "http://127.0.0.1:8000"
-]
+# Get allowed origins from environment
+allowed_origins = os.getenv('ALLOWED_ORIGINS', '["http://localhost:5000"]')
+origins = eval(allowed_origins)
 
+# More robust CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

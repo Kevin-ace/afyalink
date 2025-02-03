@@ -199,27 +199,56 @@
         });
 
         // Form submission and validation
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Password match validation
+
+            // Validate password match
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            
+
             if (password !== confirmPassword) {
-                alert('Passwords do not match!');
+                alert('Passwords do not match');
                 return;
             }
 
-            // Terms and conditions validation
-            const termsChecked = document.getElementById('termsAndConditions').checked;
-            if (!termsChecked) {
-                alert('Please agree to the Terms and Conditions');
-                return;
-            }
+            // Prepare registration data
+            const registrationData = {
+                username: document.getElementById('email').value,  // Use email as username
+                email: document.getElementById('email').value,
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                id_number: document.getElementById('idNumber').value,
+                phone_number: document.getElementById('phoneNumber').value,
+                emergency_contact: document.getElementById('emergencyContact').value,
+                password: password,
+                insurance_details: document.getElementById('insuranceDetails').value || null
+            };
 
-            // If all validations pass, you would typically send the form data to a backend
-            alert('Registration form submitted successfully!');
+            try {
+                const response = await fetch('http://localhost:8000/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(registrationData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Registration successful
+                    alert('Registration successful! Please log in.');
+                    window.location.href = 'login.html';
+                } else {
+                    // Handle registration errors
+                    const errorMessage = data.detail?.message || 'Registration failed';
+                    alert(errorMessage);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Network error. Please try again.');
+            }
         });
     </script>
 </body>

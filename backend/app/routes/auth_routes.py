@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -86,23 +86,52 @@ async def register_user(user: UserRegistration, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=TokenResponse)
 async def user_login(
-    form_data: OAuth2PasswordRequestForm = Depends(), 
+    request: Request,
+    form_data: Optional[OAuth2PasswordRequestForm] = Depends(),
     db: Session = Depends(get_db)
 ):
+    # Determine login credentials source
+    username = None
+    password = None
+
+    # Check if request is JSON
+    try:
+        content_type = request.headers.get('content-type', '')
+        if 'application/json' in content_type.lower():
+            json_body = await request.json()
+            username = json_body.get('email')
+            password = json_body.get('password')
+        elif form_data:
+            # Fallback to form data
+            username = form_data.username
+            password = form_data.password
+    except Exception as e:
+        logger.error(f"Error parsing login request: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid login request"
+        )
+
+    # Validate credentials
+    if not username or not password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username and password are required"
+        )
     
     try:
-        user = db.query(User).filter(User.email == form_data.username).first()
+        user = db.query(User).filter(User.email == username).first()
         
         if not user:
-            logger.warning(f"Login attempt with non-existent email: {form_data.username}")
+            logger.warning(f"Login attempt with non-existent email: {username}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
                 headers={"WWW-Authenticate": "Bearer"}
             )
         
-        if not verify_password(form_data.password, user.password_hash):
-            logger.warning(f"Failed login attempt for email: {form_data.username}")
+        if not verify_password(password, user.password_hash):
+            logger.warning(f"Failed login attempt for email: {username}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
@@ -115,8 +144,15 @@ async def user_login(
         )
         
         logger.info(f"User logged in successfully: {user.email}")
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {
+            "access_token": access_token, 
+            "token_type": "bearer",
+            "user": UserResponse.from_orm(user)
+        }
     
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
     except Exception as e:
         logger.error(f"Unexpected error during login: {e}")
         raise HTTPException(

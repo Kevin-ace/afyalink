@@ -14,31 +14,117 @@ body {
     padding: 2rem 0;
 }
 
-.service-categories {
+.services-filter {
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.filter-options {
     display: flex;
-    justify-content: space-around;
-    padding: 2rem;
-    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.filter-options select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    min-width: 200px;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
 }
 
 .service-card {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 1rem;
     padding: 1.5rem;
-    text-align: center;
-    width: 300px;
+    text-align: left;
     transition: transform 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .service-card:hover {
+    transform: scale(1.03);
+}
+
+.service-icon {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.service-icon i {
+    font-size: 3rem;
+    color: #3498db;
+}
+
+.service-details {
+    list-style-type: none;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.service-details li {
+    background-color: #f1f1f1;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.service-meta {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+    color: #7f8c8d;
+}
+
+.service-meta i {
+    margin-right: 0.5rem;
+}
+
+.additional-services {
+    background-color: #f9f9f9;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.support-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.support-card:hover {
     transform: scale(1.05);
 }
 
 @media (max-width: 768px) {
-    .service-categories {
+    .filter-options {
         flex-direction: column;
         align-items: center;
+    }
+
+    .service-grid,
+    .support-grid {
+        grid-template-columns: 1fr;
     }
 }

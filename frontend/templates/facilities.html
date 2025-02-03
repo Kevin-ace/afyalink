@@ -63,17 +63,63 @@
         </section>
 
         <section class="facilities-list">
-            <div class="facility-card">
-                <h2>Central Hospital</h2>
-                <p>Location: City Center</p>
-                <p>Specialties: General, Emergency</p>
-                <a href="booking.html" class="btn">Book Consultation</a>
+            <div class="facilities-filter">
+                <h2>Filter Facilities</h2>
+                <div class="filter-options">
+                    <select id="specialty-filter">
+                        <option value="">All Specialties</option>
+                        <option value="general">General Medicine</option>
+                        <option value="pediatrics">Pediatrics</option>
+                        <option value="emergency">Emergency Care</option>
+                        <option value="cardiology">Cardiology</option>
+                        <option value="orthopedics">Orthopedics</option>
+                    </select>
+                    <select id="location-filter">
+                        <option value="">All Locations</option>
+                        <option value="city-center">City Center</option>
+                        <option value="suburban">Suburban Area</option>
+                        <option value="downtown">Downtown</option>
+                    </select>
+                </div>
             </div>
-            <div class="facility-card">
-                <h2>Community Clinic</h2>
-                <p>Location: Suburban Area</p>
-                <p>Specialties: Primary Care, Pediatrics</p>
-                <a href="booking.html" class="btn">Book Consultation</a>
+
+            <div class="facility-grid">
+                <div class="facility-card" data-specialty="general emergency" data-location="city-center">
+                    <h2>Central Hospital</h2>
+                    <p><i class="fas fa-map-marker-alt"></i> City Center</p>
+                    <p><i class="fas fa-stethoscope"></i> Specialties: General, Emergency</p>
+                    <p><i class="fas fa-phone"></i> (123) 456-7890</p>
+                    <p><i class="fas fa-clock"></i> Hours: 24/7 Open</p>
+                    <div class="facility-details">
+                        <span class="badge">Top Rated</span>
+                        <span class="badge">Modern Equipment</span>
+                    </div>
+                    <a href="booking.html" class="btn">Book Consultation</a>
+                </div>
+                <div class="facility-card" data-specialty="pediatrics general" data-location="suburban">
+                    <h2>Community Clinic</h2>
+                    <p><i class="fas fa-map-marker-alt"></i> Suburban Area</p>
+                    <p><i class="fas fa-stethoscope"></i> Specialties: Primary Care, Pediatrics</p>
+                    <p><i class="fas fa-phone"></i> (987) 654-3210</p>
+                    <p><i class="fas fa-clock"></i> Hours: 8am - 8pm</p>
+                    <div class="facility-details">
+                        <span class="badge">Family Friendly</span>
+                        <span class="badge">Child Care</span>
+                    </div>
+                    <a href="booking.html" class="btn">Book Consultation</a>
+                </div>
+                <div class="facility-card" data-specialty="cardiology emergency" data-location="downtown">
+                    <h2>Metropolitan Heart Center</h2>
+                    <p><i class="fas fa-map-marker-alt"></i> Downtown</p>
+                    <p><i class="fas fa-stethoscope"></i> Specialties: Cardiology, Emergency</p>
+                    <p><i class="fas fa-phone"></i> (456) 789-0123</p>
+                    <p><i class="fas fa-clock"></i> Hours: 24/7 Open</p>
+                    <div class="facility-details">
+                        <span class="badge">Advanced Cardiac Care</span>
+                        <span class="badge">Research Center</span>
+                    </div>
+                    <a href="booking.html" class="btn">Book Consultation</a>
+                </div>
             </div>
         </section>
     </main>

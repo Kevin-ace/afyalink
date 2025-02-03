@@ -63,15 +63,89 @@
         </section>
 
         <section class="recommendation-list">
-            <div class="recommendation-card">
-                <h2>Nutrition Advice</h2>
-                <p>Personalized dietary suggestions</p>
-                <a href="booking.html" class="btn">Consult Nutritionist</a>
+            <div class="recommendations-filter">
+                <h2>Personalize Your Recommendations</h2>
+                <div class="filter-options">
+                    <select id="age-group">
+                        <option value="">Select Age Group</option>
+                        <option value="child">0-12 years</option>
+                        <option value="teen">13-19 years</option>
+                        <option value="adult">20-49 years</option>
+                        <option value="senior">50+ years</option>
+                    </select>
+                    <select id="health-focus">
+                        <option value="">Health Focus</option>
+                        <option value="weight">Weight Management</option>
+                        <option value="heart">Heart Health</option>
+                        <option value="mental">Mental Wellness</option>
+                        <option value="fitness">General Fitness</option>
+                    </select>
+                </div>
             </div>
-            <div class="recommendation-card">
-                <h2>Fitness Plan</h2>
-                <p>Exercise routines suited to your health</p>
-                <a href="booking.html" class="btn">Consult Fitness Expert</a>
+
+            <div class="recommendation-grid">
+                <div class="recommendation-card" data-age="adult" data-focus="heart fitness">
+                    <h2>Heart Health & Fitness Plan</h2>
+                    <div class="recommendation-details">
+                        <p><i class="fas fa-heartbeat"></i> Cardiovascular Wellness</p>
+                        <p><i class="fas fa-clock"></i> Recommended Check-up: Quarterly</p>
+                        <ul>
+                            <li>30-minute moderate cardio daily</li>
+                            <li>Heart rate monitoring</li>
+                            <li>Cholesterol screening</li>
+                        </ul>
+                        <a href="booking.html" class="btn">Consult Cardiologist</a>
+                    </div>
+                </div>
+
+                <div class="recommendation-card" data-age="senior" data-focus="weight mental">
+                    <h2>Senior Wellness Program</h2>
+                    <div class="recommendation-details">
+                        <p><i class="fas fa-walking"></i> Active Aging Support</p>
+                        <p><i class="fas fa-clock"></i> Recommended Check-up: Bi-annually</p>
+                        <ul>
+                            <li>Low-impact exercise routines</li>
+                            <li>Cognitive health assessment</li>
+                            <li>Nutrition counseling</li>
+                        </ul>
+                        <a href="booking.html" class="btn">Schedule Assessment</a>
+                    </div>
+                </div>
+
+                <div class="recommendation-card" data-age="teen" data-focus="mental fitness">
+                    <h2>Teen Health & Wellness</h2>
+                    <div class="recommendation-details">
+                        <p><i class="fas fa-brain"></i> Mental and Physical Development</p>
+                        <p><i class="fas fa-clock"></i> Recommended Check-up: Annually</p>
+                        <ul>
+                            <li>Physical activity guidance</li>
+                            <li>Mental health screening</li>
+                            <li>Nutritional education</li>
+                        </ul>
+                        <a href="booking.html" class="btn">Teen Wellness Consultation</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="expert-recommendations">
+                <h2>Expert Health Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h3>Nutrition Tips</h3>
+                        <p>Balanced diet recommendations from certified nutritionists</p>
+                        <a href="#" class="btn btn-outline-primary">Read More</a>
+                    </div>
+                    <div class="insight-card">
+                        <h3>Mental Wellness</h3>
+                        <p>Strategies for maintaining mental health and reducing stress</p>
+                        <a href="#" class="btn btn-outline-primary">Read More</a>
+                    </div>
+                    <div class="insight-card">
+                        <h3>Fitness Guidance</h3>
+                        <p>Personalized workout plans for different fitness levels</p>
+                        <a href="#" class="btn btn-outline-primary">Read More</a>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

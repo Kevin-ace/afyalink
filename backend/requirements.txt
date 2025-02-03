@@ -3,8 +3,9 @@ fastapi==0.95.1
 uvicorn==0.22.0
 
 # Database
-sqlalchemy==1.4.41
+sqlalchemy==1.4.46
 alembic==1.10.3
+psycopg2-binary==2.9.6
 
 # Authentication
 python-jose==3.3.0
@@ -17,8 +18,7 @@ shapely==2.0.1
 
 # Other dependencies
 pydantic==1.10.7
-psycopg2-binary==2.9.6
 email-validator==2.1.1
 
 # Optional: if you need additional features
-python-dotenv==1.0.0
+python-dotenv==1.0.0  # Added for environment variable management

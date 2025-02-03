@@ -63,20 +63,116 @@
         </section>
 
         <section class="service-categories">
-            <div class="service-card">
-                <h2>Primary Care</h2>
-                <p>Routine check-ups and preventive care</p>
-                <a href="booking.html" class="btn">Book Now</a>
+            <div class="services-filter">
+                <h2>Filter Healthcare Services</h2>
+                <div class="filter-options">
+                    <select id="service-type">
+                        <option value="">All Services</option>
+                        <option value="primary">Primary Care</option>
+                        <option value="specialist">Specialist Consultations</option>
+                        <option value="diagnostic">Diagnostic Services</option>
+                        <option value="emergency">Emergency Care</option>
+                    </select>
+                </div>
             </div>
-            <div class="service-card">
-                <h2>Specialist Consultations</h2>
-                <p>Expert medical advice across various specialties</p>
-                <a href="booking.html" class="btn">Book Now</a>
+
+            <div class="service-grid">
+                <div class="service-card" data-type="primary">
+                    <div class="service-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h2>Primary Care</h2>
+                    <p>Comprehensive health management and preventive care</p>
+                    <ul class="service-details">
+                        <li>Annual health check-ups</li>
+                        <li>Chronic disease management</li>
+                        <li>Vaccinations and immunizations</li>
+                        <li>Health screenings</li>
+                    </ul>
+                    <div class="service-meta">
+                        <span class="duration"><i class="fas fa-clock"></i> 30-60 mins</span>
+                        <span class="price"><i class="fas fa-dollar-sign"></i> Starting at $100</span>
+                    </div>
+                    <a href="booking.html" class="btn btn-primary">Book Appointment</a>
+                </div>
+
+                <div class="service-card" data-type="specialist">
+                    <div class="service-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h2>Specialist Consultations</h2>
+                    <p>Expert medical advice across various specialties</p>
+                    <ul class="service-details">
+                        <li>Cardiology consultations</li>
+                        <li>Dermatology assessments</li>
+                        <li>Neurological evaluations</li>
+                        <li>Orthopedic consultations</li>
+                    </ul>
+                    <div class="service-meta">
+                        <span class="duration"><i class="fas fa-clock"></i> 45-90 mins</span>
+                        <span class="price"><i class="fas fa-dollar-sign"></i> Starting at $200</span>
+                    </div>
+                    <a href="booking.html" class="btn btn-secondary">Book Consultation</a>
+                </div>
+
+                <div class="service-card" data-type="diagnostic">
+                    <div class="service-icon">
+                        <i class="fas fa-x-ray"></i>
+                    </div>
+                    <h2>Diagnostic Services</h2>
+                    <p>Advanced medical testing and comprehensive imaging</p>
+                    <ul class="service-details">
+                        <li>Blood tests and panels</li>
+                        <li>MRI and CT scans</li>
+                        <li>Ultrasound imaging</li>
+                        <li>ECG and stress tests</li>
+                    </ul>
+                    <div class="service-meta">
+                        <span class="duration"><i class="fas fa-clock"></i> Varies by test</span>
+                        <span class="price"><i class="fas fa-dollar-sign"></i> Starting at $150</span>
+                    </div>
+                    <a href="booking.html" class="btn btn-info">Schedule Test</a>
+                </div>
+
+                <div class="service-card" data-type="emergency">
+                    <div class="service-icon">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <h2>Emergency Care</h2>
+                    <p>Immediate medical intervention and critical support</p>
+                    <ul class="service-details">
+                        <li>24/7 emergency response</li>
+                        <li>Trauma care</li>
+                        <li>Critical condition management</li>
+                        <li>Rapid diagnostic support</li>
+                    </ul>
+                    <div class="service-meta">
+                        <span class="availability"><i class="fas fa-clock"></i> 24/7 Available</span>
+                        <span class="coverage"><i class="fas fa-globe"></i> Comprehensive Coverage</span>
+                    </div>
+                    <a href="emergency.html" class="btn btn-danger">Emergency Resources</a>
+                </div>
             </div>
-            <div class="service-card">
-                <h2>Diagnostic Services</h2>
-                <p>Advanced medical testing and imaging</p>
-                <a href="booking.html" class="btn">Book Now</a>
+
+            <div class="additional-services">
+                <h2>Additional Healthcare Support</h2>
+                <div class="support-grid">
+                    <div class="support-card">
+                        <h3>Telehealth Consultations</h3>
+                        <p>Remote medical advice and follow-ups</p>
+                        <a href="#" class="btn btn-outline-primary">Learn More</a>
+                    </div>
+                    <div class="support-card">
+                        <h3>Home Health Services</h3>
+                        <p>Medical care and support at your residence</p>
+                        <a href="#" class="btn btn-outline-primary">Learn More</a>
+                    </div>
+                    <div class="support-card">
+                        <h3>Mental Health Support</h3>
+                        <p>Counseling and psychological services</p>
+                        <a href="#" class="btn btn-outline-primary">Learn More</a>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

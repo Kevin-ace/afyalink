@@ -14,43 +14,104 @@ body {
     padding: 2rem 0;
 }
 
-.insurance-plans {
-    display: flex;
-    justify-content: space-around;
-    padding: 2rem;
-    flex-wrap: wrap;
+.insurance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
 }
 
-.plan-card {
+.insurance-card {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 1rem;
     padding: 1.5rem;
-    text-align: center;
-    width: 300px;
+    text-align: left;
+    position: relative;
     transition: transform 0.3s ease;
 }
 
-.plan-card:hover {
-    transform: scale(1.05);
+.insurance-card:hover {
+    transform: scale(1.03);
 }
 
-.plan-card ul {
+.tier-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #2ecc71;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.tier-1 .tier-badge { background-color: #3498db; }
+.tier-2 .tier-badge { background-color: #f39c12; }
+.tier-3 .tier-badge { background-color: #95a5a6; }
+
+.provider-description {
+    color: #7f8c8d;
+    margin-bottom: 1rem;
+}
+
+.plan-features {
     list-style-type: none;
     padding: 0;
 }
 
-.plan-card ul li {
+.plan-features li {
     margin: 0.5rem 0;
-    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.plan-features li i {
+    color: #2ecc71;
+    margin-right: 0.5rem;
+}
+
+.pricing {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+    align-items: center;
+}
+
+.monthly-cost {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.annual-savings {
+    color: #27ae60;
+    font-size: 0.9rem;
+}
+
+.insurance-comparison {
+    background-color: #f9f9f9;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.insurance-comparison table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.insurance-comparison th, 
+.insurance-comparison td {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    text-align: left;
+}
+
+.insurance-comparison th {
     background-color: #f1f1f1;
-    border-radius: 5px;
 }
 
 @media (max-width: 768px) {
-    .insurance-plans {
-        flex-direction: column;
-        align-items: center;
+    .insurance-grid {
+        grid-template-columns: 1fr;
     }
 }
