@@ -817,4 +817,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize Navigation Handlers
     Object.values(navHandlers).forEach(handler => handler());
+
+    // New Form Submission Handlers
+    const bookingForm = document.querySelector('.booking-form');
+    
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const formData = new FormData(bookingForm);
+            const bookingData = {
+                serviceType: formData.get('service-type'),
+                preferredDate: formData.get('preferred-date'),
+                preferredTime: formData.get('preferred-time'),
+                patientName: formData.get('patient-name'),
+                patientEmail: formData.get('patient-email'),
+                patientPhone: formData.get('patient-phone')
+            };
+
+            try {
+                const response = await fetch('/api/book-appointment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+
+                if (response.ok) {
+                    alert('Appointment booked successfully!');
+                    bookingForm.reset();
+                } else {
+                    const errorData = await response.json();
+                    alert(`Booking failed: ${errorData.message}`);
+                }
+            } catch (error) {
+                console.error('Booking error:', error);
+                alert('An error occurred while booking your appointment.');
+            }
+        });
+    }
+
+    // Add active page highlighting
+    const currentPage = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('nav ul li a');
+    
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+        }
+    });
 });

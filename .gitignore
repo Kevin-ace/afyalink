@@ -1,4 +1,4 @@
-# Python
+# Python-specific ignores
 __pycache__/
 *.py[cod]
 *$py.class
@@ -21,26 +21,28 @@ wheels/
 *.egg
 MANIFEST
 
-# Virtual Environment
+# Virtual Environments
 venv/
 env/
-.env
-.venv
-backend/venv/
+.env/
+.venv/
+ENV/
 
-# Logs
+# Django / Flask
 *.log
-logs/
-backend/logs/
+local_settings.py
+db.sqlite3
+media/
 
-# Database
-*.sqlite3
-*.db
-
-# Frontend
+# Frontend-specific ignores
 node_modules/
 npm-debug.log
+yarn-debug.log
 yarn-error.log
+
+# Compiled files
+*.css.map
+*.js.map
 
 # IDE and Editor files
 .idea/
@@ -58,11 +60,26 @@ yarn-error.log
 ehthumbs.db
 Thumbs.db
 
-# Project specific
-backend/app/data_loader.log
-backend/migrations/versions/
-
 # Sensitive Information
 *.env
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Backup files
+*.bak
+*.gho
+*.ori
+*.orig
+*.tmp
+
+# Logs
+logs/
+*.log
+
+# Project-specific ignores
 config.ini
 secrets.json
+*.sqlite

@@ -1,0 +1,44 @@
+/* Services Page Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.services-header {
+    background-color: #3498db;
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.service-categories {
+    display: flex;
+    justify-content: space-around;
+    padding: 2rem;
+    flex-wrap: wrap;
+}
+
+.service-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+    width: 300px;
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .service-categories {
+        flex-direction: column;
+        align-items: center;
+    }
+}

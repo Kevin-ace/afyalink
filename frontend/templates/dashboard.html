@@ -73,9 +73,10 @@
                 <i class="fas fa-hospital me-1"></i>Health Services
               </a>
               <ul class="dropdown-menu" aria-labelledby="healthServicesDropdown">
-                <li><a class="dropdown-item" href="#">Find Hospitals</a></li>
-                <li><a class="dropdown-item" href="#">Book Appointment</a></li>
-                <li><a class="dropdown-item" href="#">Emergency Services</a></li>
+                <li><a class="dropdown-item" href="facilities.html">Find Hospitals</a></li>
+                <li><a class="dropdown-item" href="booking.html">Book Appointment</a></li>
+                <li><a class="dropdown-item" href="emergency.html">Emergency Services</a></li>
+                <li><a class="dropdown-item" href="recommendations.html">Health Recommendations</a></li>
               </ul>
             </li>
             <li class="nav-item">
@@ -88,9 +89,9 @@
                 <i class="fas fa-tools me-1"></i>Health Tools
               </a>
               <ul class="dropdown-menu" aria-labelledby="healthToolsDropdown">
-                <li><a class="dropdown-item" href="#">BMI Calculator</a></li>
-                <li><a class="dropdown-item" href="#">Medication Tracker</a></li>
-                <li><a class="dropdown-item" href="#">Health Diary</a></li>
+                <li><a class="dropdown-item" href="bmi-calculator.html">BMI Calculator</a></li>
+                <li><a class="dropdown-item" href="medication-tracker.html">Medication Tracker</a></li>
+                <li><a class="dropdown-item" href="health-diary.html">Health Diary</a></li>
               </ul>
             </li>
             <li class="nav-item">
@@ -99,7 +100,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-danger" href="login.html">
+              <a class="nav-link text-danger" href="#" id="logout-btn">
                 <i class="fas fa-sign-out-alt me-1"></i>Logout
               </a>
             </li>
@@ -325,6 +326,33 @@
                         }
                     }).addTo(map);
                 });
+        });
+    </script>
+    <script>
+        // Access Control and Authentication Check
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const logoutBtn = document.getElementById('logout-btn');
+            const protectedLinks = document.querySelectorAll('.nav-item:not(:first-child) a');
+
+            // Logout functionality
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'login.html';
+            });
+
+            // Access control
+            if (!isLoggedIn) {
+                // Allow only dashboard access
+                protectedLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        alert('Please log in to access this feature.');
+                        window.location.href = 'login.html';
+                    });
+                });
+            }
         });
     </script>
   </body>

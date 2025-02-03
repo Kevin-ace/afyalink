@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afyalink - Emergency Resources</title>
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/emergency.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+      <div class="container-fluid px-4">
+        <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
+          <img src="./assets/icons/logos.png" alt="AfyaLink Logo" width="40" height="40" class="me-2">
+          <span class="brand-name">AfyaLink</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">
+                <i class="fas fa-home me-1"></i>Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="emergency.html">
+                <i class="fas fa-ambulance me-1"></i>Emergency Services
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="emergencyDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-list me-1"></i>Emergency Options
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                <li><a class="dropdown-item" href="#">Emergency Contacts</a></li>
+                <li><a class="dropdown-item" href="facilities.html">Nearby Emergency Facilities</a></li>
+                <li><a class="dropdown-item" href="#">First Aid Guide</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="profile.html">
+                <i class="fas fa-user me-1"></i>Profile
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-danger" href="login.html">
+                <i class="fas fa-sign-out-alt me-1"></i>Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+        <section class="emergency-header">
+            <h1>Emergency Resources</h1>
+            <p>Immediate help and critical support</p>
+        </section>
+
+        <section class="emergency-contacts">
+            <div class="contact-card">
+                <h2>Emergency Hotline</h2>
+                <p>Call: 911</p>
+                <a href="tel:911" class="btn emergency-btn">Call Now</a>
+            </div>
+            <div class="contact-card">
+                <h2>Nearest Hospital</h2>
+                <p>Central Hospital: (123) 456-7890</p>
+                <a href="tel:+11234567890" class="btn emergency-btn">Call Hospital</a>
+            </div>
+        </section>
+
+        <section class="emergency-guidelines">
+            <h2>Emergency Guidelines</h2>
+            <ul>
+                <li>Stay calm and assess the situation</li>
+                <li>Call emergency services immediately</li>
+                <li>Provide clear and concise information</li>
+                <li>Follow instructions from emergency responders</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Afyalink. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../script.js"></script>
+</body>
+</html>

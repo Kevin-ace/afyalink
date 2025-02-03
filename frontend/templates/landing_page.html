@@ -29,95 +29,29 @@
 </head>
 <body>
     <header class="container-fluid responsive-flex">
-      <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2">
-        <div class="container">
-          <a
-            class="navbar-brand d-flex align-items-center me-4"
-            href="landing_page.html"
-          >
-            <img
-              src="./assets/icons/logos.png"
-              alt="AfyaLink Logo"
-              width="35"
-              height="35"
-              class="me-2"
-            />
-            <span class="brand-name fw-bold">AfyaLink</span>
+      <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container-fluid px-4">
+          <a class="navbar-brand d-flex align-items-center" href="landing_page.html">
+            <img src="./assets/icons/logos.png" alt="AfyaLink Logo" width="40" height="40" class="me-2">
+            <span class="brand-name">AfyaLink</span>
           </a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item me-2">
-                <a class="nav-link px-2" href="#features" aria-label="Features">
-                  <i class="fas fa-home me-1"></i>Features
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="dashboard.html">
+                  <i class="fas fa-home me-1"></i>Home
                 </a>
               </li>
-              <li class="nav-item dropdown me-2">
-                <button
-                  class="nav-link dropdown-toggle px-2 btn btn-link"
-                  id="servicesDropdown"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  aria-label="Services"
-                >
-                  <i class="fas fa-hospital me-1"></i>Services
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      aria-label="Hospital Finder"
-                      >Hospital Finder</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      aria-label="Appointment Booking"
-                      >Appointment Booking</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      aria-label="Health Resources"
-                      >Health Resources</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item me-2">
-                <a class="nav-link px-2" href="#about">
-                  <i class="fas fa-info-circle me-1"></i>About
-                </a>
-              </li>
-              <li class="nav-item me-2">
-                <a class="nav-link px-2" href="#contact">
-                  <i class="fas fa-envelope me-1"></i>Contact
+              
+              <li class="nav-item">
+                <a class="nav-link" href="login.html">
+                  <i class="fas fa-sign-in-alt me-1"></i>Sign In
                 </a>
               </li>
             </ul>
-            <div class="d-flex align-items-center">
-              <a href="login.html" class="btn btn-outline-primary me-2 btn-sm">
-                <i class="fas fa-sign-in-alt me-1"></i>Login
-              </a>
-              <a href="register.html" class="btn btn-primary btn-sm">
-                <i class="fas fa-user-plus me-1"></i>Register
-              </a>
-            </div>
           </div>
         </div>
       </nav>
@@ -226,47 +160,12 @@
       </section>
     </main>
 
-    <footer class="footer container-fluid bg-light py-5">
-      <div class="container">
-        <div class="row g-4">
-          <div class="col-md-6">
-            <div class="footer-brand mb-3">
-              <h4 class="fw-bold text-primary">AfyaLink</h4>
-              <p class="text-muted">
-                Revolutionizing healthcare access through technology and
-                personalized support.
-              </p>
-            </div>
-          </div>
-          <div class="col-md-6 text-md-end">
-            <div class="footer-links mb-3">
-              <a href="about.html" class="text-muted me-3">About</a>
-              <a href="contact.html" class="text-muted me-3">Contact</a>
-              <a href="privacy.html" class="text-muted">Privacy Policy</a>
-            </div>
-            <div class="social-icons">
-              <a href="#" class="text-muted me-3"
-                ><i class="fab fa-facebook-f"></i
-              ></a>
-              <a href="#" class="text-muted me-3"
-                ><i class="fab fa-twitter"></i
-              ></a>
-              <a href="#" class="text-muted"
-                ><i class="fab fa-linkedin-in"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <div class="text-center mt-4 pt-3 border-top">
-          <p class="text-muted mb-0">
-            &copy; 2024 AfyaLink. All Rights Reserved.
-          </p>
-        </div>
-      </div>
+    <footer>
+      <p>&copy; 2025 Afyalink. All rights reserved.</p>
     </footer>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script src="script.js"></script>
+    <script src="../script.js"></script>
 </body>
 </html>

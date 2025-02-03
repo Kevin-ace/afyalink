@@ -1,0 +1,54 @@
+/* Booking Page Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.booking-header {
+    background-color: #34495e;
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.booking-form {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.booking-form select,
+.booking-form input,
+.booking-form button {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.booking-form button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.booking-form button:hover {
+    background-color: #2980b9;
+}
+
+@media (max-width: 600px) {
+    .booking-form {
+        width: 90%;
+        margin: 1rem auto;
+        padding: 1rem;
+    }
+}
