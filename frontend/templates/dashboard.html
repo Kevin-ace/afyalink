@@ -218,8 +218,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/leaflet-control-custom@1.0.0/dist/leaflet-control-custom.js"></script>
-    <!-- Ensure script.js is loaded with defer -->
-    <script defer src="script.js"></script>
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/error.js"></script>
+    <script type="module" src="../js/utils.js"></script>
+    <script type="module" src="../js/auth-service.js"></script>
+    <script type="module" src="../js/script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Simplified map initialization

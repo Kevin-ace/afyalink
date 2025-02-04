@@ -96,62 +96,10 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.querySelector('form');
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-            const errorMessageDiv = document.getElementById('error-message');
-
-            loginForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                // Reset previous error messages
-                if (errorMessageDiv) errorMessageDiv.textContent = '';
-                
-                try {
-                    const response = await fetch('http://localhost:8000/auth/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            email: usernameInput.value,
-                            password: passwordInput.value
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        // Store token and user info
-                        localStorage.setItem('access_token', data.access_token);
-                        localStorage.setItem('user', JSON.stringify(data.user));
-                        
-                        // Redirect to dashboard
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        // Handle login errors
-                        const errorMessage = data.detail || 'Login failed';
-                        if (errorMessageDiv) {
-                            errorMessageDiv.textContent = errorMessage;
-                            errorMessageDiv.style.color = 'red';
-                        } else {
-                            alert(errorMessage);
-                        }
-                    }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    if (errorMessageDiv) {
-                        errorMessageDiv.textContent = 'Network error. Please try again.';
-                        errorMessageDiv.style.color = 'red';
-                    } else {
-                        alert('Network error. Please try again.');
-                    }
-                }
-            });
-        });
-    </script>
+    <script type="module" src="../js/config.js"></script>
+    <script type="module" src="../js/error.js"></script>
+    <script type="module" src="../js/utils.js"></script>
+    <script type="module" src="../js/auth-service.js"></script>
+    <script type="module" src="../js/script.js"></script>
 </body>
 </html>
