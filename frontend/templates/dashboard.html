@@ -49,6 +49,27 @@
         .custom-marker:hover {
             transform: scale(1.5);
         }
+        #dashboard-map {
+            height: 500px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .facility-info-window {
+            font-family: Arial, sans-serif;
+            max-width: 300px;
+        }
+        .facility-info-window h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .facility-info-window p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .facility-info-window .facility-rating {
+            color: #f39c12;
+            font-weight: bold;
+        }
     </style>
   </head>
   <body>
@@ -212,6 +233,154 @@
         </div>
       </div>
     </main>
+
+    <!-- Map Container -->
+    <div id="dashboard-map"></div>
+
+    <!-- Google Maps API Script -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzhfrY7qXo3JOBVbfuoNchfHAkjUR_eHU&libraries=places&callback=initDashboardMap" async defer></script>
+
+    <script>
+        // Global variable to track the currently open info window
+        let currentInfoWindow = null;
+
+        function initDashboardMap() {
+            // Default location (can be changed to a specific city or region)
+            const defaultLocation = { lat: -1.2921, lng: 36.8219 }; // Nairobi coordinates
+
+            // Try HTML5 geolocation
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        createDashboardMap(userLocation);
+                    },
+                    () => {
+                        // Geolocation failed, use default location
+                        createDashboardMap(defaultLocation);
+                    }
+                );
+            } else {
+                // Browser doesn't support Geolocation
+                createDashboardMap(defaultLocation);
+            }
+        }
+
+        function createDashboardMap(center) {
+            // Initialize map
+            const map = new google.maps.Map(document.getElementById('dashboard-map'), {
+                center: center,
+                zoom: 13,
+                mapTypeControl: false,
+                streetViewControl: false
+            });
+
+            // Health facility types to search
+            const healthFacilityTypes = [
+                'hospital', 
+                'doctor', 
+                'clinic', 
+                'pharmacy'
+            ];
+
+            // Search for health facilities
+            healthFacilityTypes.forEach(type => {
+                const request = {
+                    location: center,
+                    radius: '5000', // 5 km radius
+                    type: [type]
+                };
+
+                const service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, (results, status) => {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        results.forEach(facility => {
+                            // Create custom marker
+                            const marker = new google.maps.Marker({
+                                map: map,
+                                position: facility.geometry.location,
+                                title: facility.name,
+                                icon: getHealthFacilityMarkerIcon(type)
+                            });
+
+                            // Create detailed info window
+                            const infoWindow = new google.maps.InfoWindow({
+                                content: createFacilityInfoWindowContent(facility)
+                            });
+
+                            // Add click event to show info window
+                            marker.addListener('click', () => {
+                                // Close previously opened info window
+                                if (currentInfoWindow) {
+                                    currentInfoWindow.close();
+                                }
+                                
+                                // Open new info window
+                                infoWindow.open({
+                                    anchor: marker,
+                                    map: map
+                                });
+                                
+                                // Update the current info window
+                                currentInfoWindow = infoWindow;
+                            });
+                        });
+                    }
+                });
+            });
+
+            // Add user's current location marker
+            new google.maps.Marker({
+                position: center,
+                map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                title: 'Your Location'
+            });
+        }
+
+        function getHealthFacilityMarkerIcon(type) {
+            // Custom marker icons for different health facility types
+            const icons = {
+                'hospital': 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                'doctor': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                'clinic': 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                'pharmacy': 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png'
+            };
+            return icons[type] || 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+        }
+
+        function createFacilityInfoWindowContent(facility) {
+            // Create a detailed, formatted info window content
+            return `
+                <div class="facility-info-window">
+                    <h3>${facility.name}</h3>
+                    <p><strong>Type:</strong> ${facility.types[0].replace('_', ' ')}</p>
+                    <p><strong>Address:</strong> ${facility.vicinity}</p>
+                    <p class="facility-rating">
+                        <strong>Rating:</strong> 
+                        ${facility.rating ? 
+                            `${facility.rating}/5 (${facility.user_ratings_total || 0} reviews)` 
+                            : 'No ratings available'}
+                    </p>
+                    <p>
+                        <strong>Open Now:</strong> 
+                        ${facility.opening_hours && facility.opening_hours.open_now ? 
+                            '<span style="color:green;">Yes</span>' : 
+                            '<span style="color:red;">Closed</span>'}
+                    </p>
+                    ${facility.photos ? `
+                        <img src="${facility.photos[0].getUrl()}" 
+                             alt="${facility.name}" 
+                             style="max-width:250px; max-height:150px; margin-top:10px;">
+                    ` : ''}
+                </div>
+            `;
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
