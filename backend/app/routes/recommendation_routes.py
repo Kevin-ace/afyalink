@@ -3,10 +3,13 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Optional
 import math
+import logging
 
 from app.database import get_db
 from app.models import Facility, Service, Insurance
 from app.schemas import FacilityResponse
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -81,7 +84,7 @@ async def get_facility_recommendations(
         return recommendations
     
     except Exception as e:
-        print(f"Recommendation error: {str(e)}")
+        logger.error(f"Recommendation error: {str(e)}")
         raise HTTPException(
             status_code=500, 
             detail="An error occurred while processing recommendations"

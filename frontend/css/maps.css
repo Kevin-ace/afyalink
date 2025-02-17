@@ -1,0 +1,79 @@
+/* Map Section Styling */
+.map-section {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#kenya-map {
+    border-radius: 10px;
+    border: 2px solid #007bff;
+    height: 500px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.facility-popup {
+    font-family: 'Arial', sans-serif;
+    max-width: 250px;
+}
+
+.facility-popup h4 {
+    margin-bottom: 10px;
+    color: #007bff;
+    font-size: 16px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+.facility-popup p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.custom-marker {
+    transition: transform 0.2s ease;
+}
+
+.custom-marker:hover {
+    transform: scale(1.5);
+}
+
+.facility-info-window {
+    font-family: Arial, sans-serif;
+    max-width: 300px;
+}
+
+.facility-info-window h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.facility-info-window p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.facility-info-window .facility-rating {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+/* Map Error Handling Styles */
+.map-error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Responsive Map Adjustments */
+@media (max-width: 768px) {
+    #kenya-map {
+        height: 350px;
+    }
+}
