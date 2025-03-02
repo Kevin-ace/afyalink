@@ -33,7 +33,7 @@ def list_facilities(
     
     # Name filtering (case-insensitive)
     if name:
-        query = query.filter(Facility.name.ilike(f"%{name}%"))
+        query = query.filter(Facility.facility_name.ilike(f"%{name}%"))
     
     # Insurance filtering
     if insurance:

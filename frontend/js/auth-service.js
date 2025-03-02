@@ -1,6 +1,5 @@
 import { CONFIG } from './config.js';
 import { APIError } from './error.js';
-import { Utils } from './utils.js';
 import { DebugLogger } from './error.js';
 
 export class AuthService {
@@ -41,62 +40,20 @@ export class AuthService {
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
-    static async login(email, password) {
-        try {
-            const response = await this.request(
-                CONFIG.API.ENDPOINTS.AUTH + '/login', 
-                'POST', 
-                { email, password }
-            );
-
-            if (!response.success) {
-                throw new Error(response.message);
-            }
-
-            this.storeAuthData(response.data);
-            return response;
-        } catch (error) {
-            DebugLogger.error('Login Failed', error);
-            return {
-                success: false,
-                message: error.message || 'Login failed'
-            };
-        }
+    static async login(username, password) {
+        return this.request('/auth/login', 'POST', { username, password });
     }
 
     static async register(userData) {
-        try {
-            // Client-side validation
-            if (!this.#validateRegistrationData(userData)) {
-                throw new Error('Invalid registration data');
-            }
-
-            const response = await this.request(
-                CONFIG.API.ENDPOINTS.AUTH + '/register', 
-                'POST', 
-                userData
-            );
-
-            if (!response.success) {
-                throw new Error(response.message);
-            }
-
-            return response;
-        } catch (error) {
-            DebugLogger.error('Registration Failed', error);
-            return {
-                success: false,
-                message: error.message || 'Registration failed'
-            };
-        }
+        return this.request('/auth/register', 'POST', userData);
     }
 
     static storeAuthData(data) {
         localStorage.setItem(CONFIG.STORAGE.ACCESS_TOKEN, data.access_token);
         localStorage.setItem(CONFIG.STORAGE.TOKEN_TYPE, data.token_type);
-        localStorage.setItem(CONFIG.STORAGE.USER_ID, data.user_id);
-        localStorage.setItem(CONFIG.STORAGE.USER_CREATED_AT, data.created_at);
-        localStorage.setItem(CONFIG.STORAGE.USER_IS_ACTIVE, data.is_active);
+        localStorage.setItem(CONFIG.STORAGE.USER_ID, data.user.id);
+        localStorage.setItem(CONFIG.STORAGE.USER_CREATED_AT, data.user.created_at);
+        localStorage.setItem(CONFIG.STORAGE.USER_IS_ACTIVE, data.user.is_active);
     }
 
     static async refreshToken() {
@@ -142,8 +99,8 @@ export class AuthService {
 
     static #validateRegistrationData(data) {
         const requiredFields = [
-            'email', 'password', 'first_name', 'last_name', 
-            'id_number', 'phone_number'
+            'username', 'email', 'password', 'first_name', 'last_name', 
+            'id_number', 'emergency_contact'
         ];
 
         return requiredFields.every(field => 

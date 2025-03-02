@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Annotated, Optional
+from typing import Optional
 from datetime import timedelta, datetime
 import logging
 
@@ -87,7 +87,7 @@ async def register_user(user: UserRegistration, db: Session = Depends(get_db)):
 @router.post("/login", response_model=TokenResponse)
 async def user_login(
     request: Request,
-    form_data: Optional[OAuth2PasswordRequestForm] = Depends(),
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
     # Determine login credentials source
@@ -101,7 +101,7 @@ async def user_login(
             json_body = await request.json()
             username = json_body.get('email')
             password = json_body.get('password')
-        elif form_data:
+        else:
             # Fallback to form data
             username = form_data.username
             password = form_data.password

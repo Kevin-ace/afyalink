@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -164,6 +163,32 @@
     <script type="module" src="../js/error.js"></script>
     <script type="module" src="../js/utils.js"></script>
     <script type="module" src="../js/auth-service.js"></script>
-    <script type="module" src="../js/script.js"></script>
+    <script type="module">
+        import { AuthService } from '../js/auth-service.js';
+
+        document.getElementById('registrationForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const userData = {
+                username: document.getElementById('email').value.split('@')[0], // Assuming username is derived from email
+                email: document.getElementById('email').value,
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                id_number: document.getElementById('idNumber').value,
+                emergency_contact: document.getElementById('emergencyContact').value,
+                insurance_details: document.getElementById('insuranceDetails').value,
+                sha_details: '', // Assuming SHA details are not provided in the form
+                password: document.getElementById('password').value
+            };
+
+            const response = await AuthService.register(userData);
+            if (response.success) {
+                alert('Registration successful!');
+                window.location.href = 'login.html';
+            } else {
+                alert(`Registration failed: ${response.message}`);
+            }
+        });
+    </script>
 </body>
 </html>

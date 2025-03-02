@@ -44,17 +44,22 @@ class Facility(Base):
     __tablename__ = 'facilities'
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String)
-    
-    # Standard geospatial columns
+    facility_number = Column(Integer, nullable=False)
+    facility_name = Column(String, nullable=False)
+    hmis = Column(Integer)
+    province = Column(String)
+    district = Column(String)
+    division = Column(String)
+    location = Column(String)
+    sub_location = Column(String)
+    spatial_re = Column(String)
+    facility_type = Column(String)
+    agency = Column(String)
     latitude = Column(Float)
     longitude = Column(Float)
-    
-    # Additional fields
-    address = Column(String)
-    phone_number = Column(String)
-    email = Column(String)
+    global_id = Column(String)
+    x = Column(Float)
+    y = Column(Float)
     
     # Relationships
     services = relationship(
@@ -69,7 +74,7 @@ class Facility(Base):
     )
 
     def __repr__(self):
-        return f"<Facility(id={self.id}, name='{self.name}', location=({self.latitude}, {self.longitude}))>"
+        return f"<Facility(id={self.id}, name='{self.facility_name}', location=({self.latitude}, {self.longitude}))>"
 
 class Service(Base):
     __tablename__ = 'services'

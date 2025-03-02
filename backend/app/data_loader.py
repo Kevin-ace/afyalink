@@ -1,11 +1,11 @@
 import os
 import sys
 import traceback
-import pandas as pd
 import logging
+import pandas as pd
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from geoalchemy2 import func
+from sqlalchemy import UniqueConstraint
 
 # Add the project root directory to the Python path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -13,7 +13,6 @@ sys.path.insert(0, project_root)
 
 from app.database import SessionLocal, engine
 from app.models import Facility, Insurance, Base, PREDEFINED_INSURANCES
-from sqlalchemy import UniqueConstraint, func as sql_func
 
 # Configure logging
 logging.basicConfig(
@@ -107,14 +106,22 @@ def load_health_facilities():
 
                 # Create a new facility
                 new_facility = Facility(
-                    name=row['Facility Name'],
-                    description=f"{row.get('Facility Type', 'N/A')} - {row.get('Agency', 'N/A')} facility",
-                    address=f"{row.get('Province', 'N/A')}, {row.get('District', 'N/A')}, {row.get('Division', 'N/A')}",
-                    latitude=float(row['Latitude']),
-                    longitude=float(row['Longitude']),
-                    location=func.ST_MakePoint(float(row['Longitude']), float(row['Latitude'])),
-                    phone_number='N/A',  # No phone number in this dataset
-                    email='N/A',  # No email in this dataset
+                    facility_number=row['Facility Number'],
+                    facility_name=row['Facility Name'],
+                    hmis=row['HMIS'],
+                    province=row['Province'],
+                    district=row['District'],
+                    division=row['Division'],
+                    location=row['LOCATION'],
+                    sub_location=row['Sub Location'],
+                    spatial_re=row['Spatial_Re'],
+                    facility_type=row['Facility Type'],
+                    agency=row['Agency'],
+                    latitude=row['Latitude'],
+                    longitude=row['Longitude'],
+                    global_id=row['GlobalID'],
+                    x=row['x'],
+                    y=row['y']
                 )
 
                 # Associate some default insurances (you can modify this logic)

@@ -1,18 +1,17 @@
+import sys
+import os
+
+# Add the backend directory to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-from app.routes import (
-    auth_routes, 
-    service_routes, 
-    insurance_routes, 
-    recommendation_routes,
-    facilities_router
-)
+from app.routes import auth_routes, facilities_router, service_routes, insurance_routes, recommendation_routes
 from app.database import engine
 from app.models import Base
 import logging
 import logging.handlers
-import os
 from dotenv import load_dotenv
 
 # Load environment variables
