@@ -13,6 +13,7 @@ from app.models import Base
 import logging
 import logging.handlers
 from dotenv import load_dotenv
+import uvicorn
 
 # Load environment variables
 load_dotenv()
@@ -96,3 +97,6 @@ async def get_health_facilities_csv():
         media_type='text/csv', 
         filename='Health_facilities.csv'
     )
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

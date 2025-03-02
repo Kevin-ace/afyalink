@@ -9,12 +9,16 @@ export class AuthService {
             ...(requireAuth ? this.getAuthHeader() : {})
         };
 
+        DebugLogger.log('info', `Sending request to ${endpoint} with body:`, body);
+
         try {
             const response = await fetch(`${CONFIG.API.BASE_URL}${endpoint}`, {
                 method,
                 headers,
                 body: body ? JSON.stringify(body) : null
             });
+
+            DebugLogger.log('info', `Received response from ${endpoint}:`, response);
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -40,8 +44,8 @@ export class AuthService {
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
-    static async login(username, password) {
-        return this.request('/auth/login', 'POST', { username, password });
+    static async login(email, password) {
+        return this.request('/auth/login', 'POST', { email, password });
     }
 
     static async register(userData) {
@@ -95,21 +99,5 @@ export class AuthService {
 
     static isAuthenticated() {
         return !!localStorage.getItem(CONFIG.STORAGE.ACCESS_TOKEN);
-    }
-
-    static #validateRegistrationData(data) {
-        const requiredFields = [
-            'username', 'email', 'password', 'first_name', 'last_name', 
-            'id_number', 'emergency_contact'
-        ];
-
-        return requiredFields.every(field => 
-            data[field] && data[field].trim() !== ''
-        ) && this.#isValidEmail(data.email);
-    }
-
-    static #isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
     }
 }

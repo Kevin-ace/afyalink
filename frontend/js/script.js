@@ -13,8 +13,13 @@ const NavHandlers = {
             const password = document.getElementById('password').value;
             
             try {
-                await AuthService.login(email, password);
-                window.location.href = 'dashboard.html';
+                const response = await AuthService.login(email, password);
+                if (response.success) {
+                    AuthService.storeAuthData(response.data);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    Utils.displayError(`Login failed: ${response.message}`);
+                }
             } catch (error) {
                 Utils.displayError('Login failed');
             }
@@ -37,8 +42,12 @@ const NavHandlers = {
             const userData = Object.fromEntries(formData.entries());
             
             try {
-                await AuthService.register(userData);
-                window.location.href = 'login.html';
+                const response = await AuthService.register(userData);
+                if (response.success) {
+                    window.location.href = 'login.html';
+                } else {
+                    Utils.displayError(`Registration failed: ${response.message}`);
+                }
             } catch (error) {
                 Utils.displayError('Registration failed');
             }

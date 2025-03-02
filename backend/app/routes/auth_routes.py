@@ -23,6 +23,15 @@ router = APIRouter()
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+    first_name: str
+    last_name: str
+    id_number: str
+    emergency_contact: str
+    insurance_details: str
+
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(user: UserRegistration, db: Session = Depends(get_db)):
     # Check for existing user with conflicting unique fields
