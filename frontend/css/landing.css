@@ -57,6 +57,7 @@ body {
   text-align: center;
   padding: 2rem 0;
   background: linear-gradient(135deg, var(--light-color) 0%, white 100%);
+  padding-top: 0px;
 }
 
 .hero-content {
@@ -97,11 +98,12 @@ body {
   margin-top: 2rem;
   display: flex;
   justify-content: space-around;
-  /* padding: 40px 20px; */
   padding: 2rem 0;
   background-color: var(--light-color);
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 .feature {
@@ -187,6 +189,8 @@ body {
   background: linear-gradient(135deg, var(--light-color) 0%, white 100%);
   padding: 1rem 0;
   color: var(--text-color);
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .footer a {

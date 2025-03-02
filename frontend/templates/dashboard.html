@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AfyaLink - Your Health Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/styles.css" />
-    <link rel="stylesheet" href="./css/dashboard.css" />
-    <link rel="stylesheet" href="./css/navbar.css">
-    <link rel="stylesheet" href="./css/maps.css">
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/maps.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Async and defer Google Maps script -->
     <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places" async defer></script>
@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
       <div class="container-fluid px-4">
         <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
-          <img src="./assets/icons/logos.png" alt="AfyaLink Logo" width="40" height="40" class="me-2">
+          <img src="../assets/icons/logos.png" alt="AfyaLink Logo" width="40" height="40" class="me-2">
           <span class="brand-name">AfyaLink</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +109,12 @@
 
           <section class="map-section mb-3">
             <h2 class="section-title">Health Facilities in Kenya</h2>
-            <div id="kenya-map"></div>
+            <div id="map-container" class="position-relative">
+              <div id="kenya-map" class="w-100 h-100"></div>
+              <div id="map-loader" class="spinner-border text-primary position-absolute top-50 start-50 translate-middle" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
           </section>
 
           <section class="quick-actions mb-3">

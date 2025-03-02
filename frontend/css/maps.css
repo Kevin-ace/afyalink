@@ -9,9 +9,17 @@
 #kenya-map {
     border-radius: 10px;
     border: 2px solid #007bff;
-    height: 500px;
+    height: 100%;
     width: 100%;
     margin-bottom: 20px;
+}
+
+#map-container {
+    height: 400px;
+}
+
+#map-loader {
+    display: none; /* Initially hidden */
 }
 
 .facility-popup {

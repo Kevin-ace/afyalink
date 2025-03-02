@@ -106,3 +106,168 @@ export const MapService = {
         }
     }
 };
+
+document.addEventListener('DOMContentLoaded', function() {
+  const mapLoader = document.getElementById('map-loader');
+  const mapElement = document.getElementById('kenya-map');
+
+  function showLoader() {
+    mapLoader.style.display = 'block';
+  }
+
+  function hideLoader() {
+    mapLoader.style.display = 'none';
+  }
+
+  function loadGoogleMapsError() {
+    mapElement.innerHTML = `
+      <div class="alert alert-warning">
+        <strong>Map Unavailable</strong>
+        <p>Unable to load Google Maps. Please try again later.</p>
+      </div>
+    `;
+    hideLoader();
+  }
+
+  function initDashboardMap() {
+    showLoader();
+
+    // Check if Google Maps API is loaded
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+      console.error('Google Maps API not loaded');
+      loadGoogleMapsError();
+      return;
+    }
+
+    // Default location (Nairobi)
+    const defaultCenter = { lat: -1.2921, lng: 36.8219 };
+
+    // Try to get user's location, fallback to default
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        createDashboardMap(userLocation);
+      },
+      (error) => {
+        console.warn('Geolocation error:', error);
+        createDashboardMap(defaultCenter);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      }
+    );
+  }
+
+  function createDashboardMap(center) {
+    try {
+      const mapOptions = {
+        center: center,
+        zoom: 10,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [
+          {
+            featureType: 'poi.medical',
+            elementType: 'labels.icon',
+            stylers: [{ visibility: 'on' }]
+          }
+        ],
+        disableDefaultUI: true,
+        zoomControl: true,
+        mapTypeControl: false
+      };
+
+      const map = new google.maps.Map(mapElement, mapOptions);
+
+      // Fetch and process health facilities
+      fetch('http://localhost:8000/health-facilities-csv')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.text();
+        })
+        .then(csvText => {
+          Papa.parse(csvText, {
+            header: true,
+            complete: function(results) {
+              if (!results.data || results.data.length === 0) {
+                console.warn('No facilities found in CSV');
+                return;
+              }
+
+              results.data.forEach(facility => {
+                if (facility.latitude && facility.longitude) {
+                  const marker = new google.maps.Marker({
+                    position: {
+                      lat: parseFloat(facility.latitude),
+                      lng: parseFloat(facility.longitude)
+                    },
+                    map: map,
+                    title: facility.name,
+                    icon: getHealthFacilityMarkerIcon(facility.type)
+                  });
+
+                  const infoWindow = new google.maps.InfoWindow({
+                    content: createFacilityInfoWindowContent(facility)
+                  });
+
+                  marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                  });
+                }
+              });
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching health facilities:', error);
+          mapElement.innerHTML = `
+            <div class="alert alert-warning">
+              <strong>Facilities Unavailable</strong>
+              <p>Unable to load health facilities. Please try again later.</p>
+            </div>
+          `;
+        })
+        .finally(() => {
+          hideLoader();
+        });
+    } catch (error) {
+      console.error('Map initialization error:', error);
+      loadGoogleMapsError();
+    }
+  }
+
+  function getHealthFacilityMarkerIcon(type) {
+    const iconBase = './assets/icons/map-markers/';
+    const icons = {
+      'Hospital': iconBase + 'hospital-marker.png',
+      'Clinic': iconBase + 'clinic-marker.png',
+      'Health Center': iconBase + 'health-center-marker.png',
+      'default': iconBase + 'medical-marker.png'
+    };
+    return {
+      url: icons[type] || icons['default'],
+      scaledSize: new google.maps.Size(40, 40)
+    };
+  }
+
+  function createFacilityInfoWindowContent(facility) {
+    return `
+      <div class="facility-info-window">
+        <h3>${facility.name}</h3>
+        <p><strong>Type:</strong> ${facility.type}</p>
+        <p><strong>Address:</strong> ${facility.address || 'Not available'}</p>
+        <p><strong>Contact:</strong> ${facility.phone || 'Not available'}</p>
+        ${facility.rating ? `<p class="facility-rating">Rating: ${facility.rating}/5</p>` : ''}
+      </div>
+    `;
+  }
+
+  // Initialize map on page load
+  initDashboardMap();
+});

@@ -9,12 +9,14 @@
     padding: 0.5rem 1rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
+    font-size: 1.1rem; /* Increase the font size of the navbar items */
 }
 
 .navbar-brand {
     display: flex;
     align-items: center;
     font-weight: 600;
+    font-size: 1.5rem; /* Increase the font size of the brand name */
 }
 
 .navbar-brand img {
@@ -36,7 +38,7 @@
     color: var(--text-color);
     margin: 0 10px;
     transition: color 0.3s ease;
-    font-size: 1rem;
+    font-size: 1.1rem; /* Increase the font size of the nav links */
 }
 
 .navbar-nav .nav-link i {
@@ -142,7 +144,7 @@
 
 /* Navbar Spacing Adjustment */
 body {
-    padding-top: 80px; /* Adjust based on navbar height */
+    padding-top: 70px; /* Adjust this value based on the height of your navbar */
 }
 
 @media (max-width: 991px) {

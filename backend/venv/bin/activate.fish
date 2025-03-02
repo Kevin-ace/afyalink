@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/kevin/Desktop/Afyalink_prototype/backend/venv
+set -gx VIRTUAL_ENV /home/kevin/Desktop/Projects/afyalink/backend/venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
