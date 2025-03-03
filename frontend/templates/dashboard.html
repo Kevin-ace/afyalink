@@ -10,8 +10,12 @@
     <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="../css/maps.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Async and defer Google Maps script -->
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places" async defer></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
@@ -107,15 +111,12 @@
             </div>
           </section>
 
-          <section class="map-section mb-3">
-            <h2 class="section-title">Health Facilities in Kenya</h2>
-            <div id="map-container" class="position-relative">
-              <div id="kenya-map" class="w-100 h-100"></div>
-              <div id="map-loader" class="spinner-border text-primary position-absolute top-50 start-50 translate-middle" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            </div>
-          </section>
+          <main class="container-fluid px-4 py-3">
+            <section class="map-section mb-3">
+              <h2 class="section-title">Health Facilities in Kenya</h2>
+              <div id="map" style="height: 500px; width: 100%;"></div>
+            </section>
+          </main>
 
           <section class="quick-actions mb-3">
             <div class="row g-3">
@@ -180,184 +181,56 @@
       </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Global variable to track the currently open info window
-        let currentInfoWindow = null;
+      function initMap() {
+        const defaultCenter = [-1.2921, 36.8219]; // Nairobi
+        const map = L.map('map').setView(defaultCenter, 10);
 
-        function initDashboardMap() {
-            // Check if Google Maps API is loaded
-            if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-                console.error('Google Maps API not loaded');
-                loadGoogleMapsError();
-                return;
-            }
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-            // Default location (Nairobi)
-            const defaultCenter = { lat: -1.2921, lng: 36.8219 };
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const userLocation = [position.coords.latitude, position.coords.longitude];
+            map.setView(userLocation, 12);
+            L.marker(userLocation).addTo(map).bindPopup("You are here").openPopup();
+          },
+          () => {
+            console.warn("Geolocation permission denied. Using default location.");
+          }
+        );
 
-            // Try to get user's location, fallback to default
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const userLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    createDashboardMap(userLocation);
-                },
-                (error) => {
-                    console.warn('Geolocation error:', error);
-                    createDashboardMap(defaultCenter);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0
-                }
-            );
-        }
+        // Fetch hospital data from backend
+        let hospitals = [];
+        fetch('http://localhost:8000/facilities/facilities')
+            .then(response => response.json())
+            .then(data => {
+                hospitals = data;
+                addHospitalsToMap(hospitals);
+            })
+            .catch(error => console.error('Error fetching hospital data:', error));
 
-        function createDashboardMap(center) {
-            try {
-                const mapElement = document.getElementById('kenya-map');
-                
-                // Validate map container
-                if (!mapElement) {
-                    console.error('Map container not found');
-                    return;
-                }
-
-                const mapOptions = {
-                    center: center,
-                    zoom: 10,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    styles: [
-                        {
-                            featureType: 'poi.medical',
-                            elementType: 'labels.icon',
-                            stylers: [{ visibility: 'on' }]
-                        }
-                    ],
-                    // Disable default UI for a cleaner look
-                    disableDefaultUI: true,
-                    // Add some basic controls
-                    zoomControl: true,
-                    mapTypeControl: false
-                };
-
-                const map = new google.maps.Map(mapElement, mapOptions);
-
-                // Fetch and process health facilities
-                fetch('http://localhost:8000/health-facilities-csv')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then(csvText => {
-                        Papa.parse(csvText, {
-                            header: true,
-                            complete: function(results) {
-                                if (!results.data || results.data.length === 0) {
-                                    console.warn('No facilities found in CSV');
-                                    return;
-                                }
-
-                                results.data.forEach(facility => {
-                                    if (facility.latitude && facility.longitude) {
-                                        const marker = new google.maps.Marker({
-                                            position: {
-                                                lat: parseFloat(facility.latitude),
-                                                lng: parseFloat(facility.longitude)
-                                            },
-                                            map: map,
-                                            title: facility.name,
-                                            icon: getHealthFacilityMarkerIcon(facility.type)
-                                        });
-
-                                        const infoWindow = new google.maps.InfoWindow({
-                                            content: createFacilityInfoWindowContent(facility)
-                                        });
-
-                                        marker.addListener('click', () => {
-                                            infoWindow.open(map, marker);
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching health facilities:', error);
-                        mapElement.innerHTML = `
-                            <div class="alert alert-warning">
-                                <strong>Facilities Unavailable</strong>
-                                <p>Unable to load health facilities. Please try again later.</p>
-                            </div>
-                        `;
-                    });
-            } catch (error) {
-                console.error('Map initialization error:', error);
-                loadGoogleMapsError();
-            }
-        }
-
-        function getHealthFacilityMarkerIcon(type) {
-            const iconBase = './assets/icons/map-markers/';
-            const icons = {
-                'Hospital': iconBase + 'hospital-marker.png',
-                'Clinic': iconBase + 'clinic-marker.png',
-                'Health Center': iconBase + 'health-center-marker.png',
-                'default': iconBase + 'medical-marker.png'
-            };
-            return {
-                url: icons[type] || icons['default'],
-                scaledSize: new google.maps.Size(40, 40)
-            };
-        }
-
-        function createFacilityInfoWindowContent(facility) {
-            return `
-                <div class="facility-info-window">
-                    <h3>${facility.name}</h3>
-                    <p><strong>Type:</strong> ${facility.type}</p>
-                    <p><strong>Address:</strong> ${facility.address || 'Not available'}</p>
-                    <p><strong>Contact:</strong> ${facility.phone || 'Not available'}</p>
-                    ${facility.rating ? `<p class="facility-rating">Rating: ${facility.rating}/5</p>` : ''}
-                </div>
-            `;
-        }
-
-        // Initialize map on page load
-        document.addEventListener('DOMContentLoaded', initDashboardMap);
-    </script>
-    <script>
-        // Access Control and Authentication Check
-        document.addEventListener('DOMContentLoaded', function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const logoutBtn = document.getElementById('logout-btn');
-            const protectedLinks = document.querySelectorAll('.nav-item:not(:first-child) a');
-
-            // Logout functionality
-            logoutBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                localStorage.removeItem('isLoggedIn');
-                window.location.href = 'login.html';
+        function addHospitalsToMap(hospitals) {
+            hospitals.forEach(hospital => {
+                L.marker([hospital.latitude, hospital.longitude]).addTo(map)
+                    .bindPopup(`<b>${hospital.name}</b><br>${hospital.services}`);
             });
+        }
 
-            // Access control
-            if (!isLoggedIn) {
-                // Allow only dashboard access
-                protectedLinks.forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        alert('Please log in to access this feature.');
-                        window.location.href = 'login.html';
-                    });
-                });
-            }
+        // Search functionality
+        document.getElementById('search-bar').addEventListener('input', function () {
+            let searchValue = this.value.toLowerCase();
+            let filteredHospitals = hospitals.filter(hospital => 
+                hospital.name.toLowerCase().includes(searchValue) ||
+                hospital.services.toLowerCase().includes(searchValue)
+            );
+            map.eachLayer(layer => { if (layer instanceof L.Marker) map.removeLayer(layer); });
+            addHospitalsToMap(filteredHospitals);
         });
+      }
     </script>
+    <script src="js/leaflet-map.js"></script>
+
   </body>
 </html>
