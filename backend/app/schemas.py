@@ -32,13 +32,15 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8)
 
-class UserResponse(UserBase):
+class UserResponse(BaseModel):
     id: int
+    email: str
+    username: str
     created_at: datetime
     is_active: bool
 
     class Config:
-        from_attributes = True  # Updated from orm_mode to from_attributes
+        orm_mode = True
 
 # Facility Schemas
 class FacilityBase(BaseModel):
@@ -112,7 +114,7 @@ class UserRegistration(BaseModel):
     password: str = Field(..., min_length=8)
 
 class UserCredentials(BaseModel):
-    username: str
+    email: str
     password: str
 
 class TokenResponse(BaseModel):

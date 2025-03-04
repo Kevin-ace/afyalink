@@ -4,10 +4,11 @@ const getEnvVariable = (key, defaultValue) => {
 };
 
 export const CONFIG = {
-    API: {
-        BASE_URL: 'http://localhost:8000' // Replace with your backend URL
-    },
     STORAGE: {
-        ACCESS_TOKEN: 'access_token'
+        ACCESS_TOKEN: 'access_token',
+        TOKEN_TYPE: 'token_type',
+        USER_ID: 'user_id',
+        USER_CREATED_AT: 'user_created_at',
+        USER_IS_ACTIVE: 'user_is_active'
     }
 };

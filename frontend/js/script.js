@@ -2,6 +2,19 @@ import { AuthService } from './auth-service.js';
 import { MapService } from './map-service.js';
 import { Utils } from './utils.js';
 import { DebugLogger } from './error.js';
+import './leaflet-map.js'; 
+
+// DOM Elements
+const loginBtn = document.getElementById('loginBtn');
+const registerBtn = document.getElementById('registerBtn');
+const loginModal = document.getElementById('loginModal');
+const closeModal = document.querySelector('.close');
+const loginForm = document.getElementById('loginForm');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const serviceFilter = document.getElementById('serviceFilter');
+const insuranceFilter = document.getElementById('insuranceFilter');
+const facilitiesList = document.getElementById('facilitiesList');
 
 // Navigation and Page-Specific Initialization
 const NavHandlers = {

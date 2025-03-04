@@ -70,14 +70,14 @@
                 <label for="email" class="form-label">
                     <i class="fas fa-envelope me-2"></i>Email Address
                 </label>
-                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" required autocomplete="email">
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">
                     <i class="fas fa-lock me-2"></i>Password
                 </label>
-                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password" required autocomplete="current-password">
             </div>
 
             <div class="d-grid">
@@ -108,13 +108,19 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            const response = await AuthService.login(email, password);
-            if (response.success) {
-                alert('Login successful!');
-                AuthService.storeAuthData(response);
-                window.location.href = 'dashboard.html'; // Redirect to dashboard or home page
-            } else {
-                alert(`Login failed: ${response.message}`);
+            console.log('Login form submitted with:', { email, password });
+
+            try {
+                const response = await AuthService.login(email, password);
+                if (response.access_token) {
+                    alert('Login successful!');
+                    AuthService.storeAuthData(response);
+                    window.location.href = 'dashboard.html'; // Redirect to dashboard or home page
+                } else {
+                    alert(`Login failed: ${response.message}`);
+                }
+            } catch (error) {
+                alert(`Login failed: ${error.message || JSON.stringify(error.response.data)}`);
             }
         });
     </script>

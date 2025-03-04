@@ -12,8 +12,11 @@ from app.database import engine
 from app.models import Base
 import logging
 import logging.handlers
+import json
 from dotenv import load_dotenv
 import uvicorn
+
+
 
 # Load environment variables
 load_dotenv()
@@ -59,13 +62,13 @@ app = FastAPI(
 )
 
 # Get allowed origins from environment
-allowed_origins = os.getenv('ALLOWED_ORIGINS', '["http://localhost:5000"]')
-origins = eval(allowed_origins)
+allowed_origins = os.getenv('ALLOWED_ORIGINS', '["http://127.0.0.1:5500"]')
+origins = json.loads(allowed_origins)
 
-# More robust CORS middleware
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origins,  # Use the origins from the environment variable
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
