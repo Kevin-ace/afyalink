@@ -48,3 +48,7 @@ media/
 uploads/
 *.mp4
 *.zip
+
+# Avatar uploads
+uploads/
+uploads/avatars/

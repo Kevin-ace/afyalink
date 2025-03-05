@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Table, Text, DateTime
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Table, Text, DateTime, LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -30,10 +30,13 @@ class User(Base):
     
     # New fields
     id_number = Column(String, unique=True)
+    phone_number = Column(String)
     emergency_contact = Column(String)
     insurance_details = Column(String, nullable=True)
     sha_details = Column(String, nullable=True)
+    avatar_url = Column(String, nullable=True)  # Store URL to avatar image
     created_at = Column(DateTime)
+    updated_at = Column(DateTime)
     
     # Optional relationship with Insurance if needed
     insurance_id = Column(Integer, ForeignKey('insurances.id'), nullable=True)

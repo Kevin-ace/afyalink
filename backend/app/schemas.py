@@ -140,3 +140,27 @@ class TokenResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class ProfileUpdate(BaseModel):
+    phone_number: Optional[str] = None
+    emergency_contact: Optional[str] = None
+    insurance_details: Optional[str] = None
+    sha_details: Optional[str] = None
+
+class ProfileResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    first_name: str
+    last_name: str
+    id_number: str
+    phone_number: Optional[str] = None
+    emergency_contact: Optional[str] = None
+    insurance_details: Optional[str] = None
+    sha_details: Optional[str] = None
+    avatar_url: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True

@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, File, UploadFile
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional
@@ -7,15 +7,19 @@ from datetime import timedelta, datetime
 import logging
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
+import shutil
+import os
+import aiofiles
 
 from app.database import get_db
 from app.models import User
-from app.schemas import UserRegistration, UserCredentials, TokenResponse, UserResponse, Token
+from app.schemas import UserRegistration, UserCredentials, TokenResponse, UserResponse, Token, ProfileUpdate, ProfileResponse
 from app.auth import (
     create_access_token, 
     verify_password, 
     get_password_hash,
-    authenticate_user
+    authenticate_user,
+    get_current_active_user
 )
 
 # Configure logging
@@ -25,6 +29,11 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Configure file upload settings
+UPLOAD_DIR = "uploads/avatars"
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
 
 class LoginRequest(BaseModel):
     username: str
@@ -162,3 +171,79 @@ async def register_options():
 async def register(user_data: RegisterRequest):
     # Registration logic here
     return {"message": "User registered successfully"}
+
+@router.get("/profile", response_model=ProfileResponse)
+async def get_profile(current_user: User = Depends(get_current_active_user)):
+    """Get current user's profile"""
+    return current_user
+
+@router.put("/profile/update", response_model=ProfileResponse)
+async def update_profile(
+    profile_data: ProfileUpdate,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Update current user's profile"""
+    try:
+        # Update only provided fields
+        for field, value in profile_data.dict(exclude_unset=True).items():
+            setattr(current_user, field, value)
+        
+        current_user.updated_at = datetime.utcnow()
+        db.commit()
+        db.refresh(current_user)
+        
+        return current_user
+    
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Profile update error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update profile"
+        )
+
+@router.post("/profile/avatar")
+async def upload_avatar(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Upload user avatar"""
+    try:
+        # Validate file type
+        if not file.content_type.startswith('image/'):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="File must be an image"
+            )
+        
+        # Create unique filename
+        file_extension = os.path.splitext(file.filename)[1]
+        filename = f"avatar_{current_user.id}_{datetime.utcnow().timestamp()}{file_extension}"
+        file_path = os.path.join(UPLOAD_DIR, filename)
+        
+        # Save file
+        async with aiofiles.open(file_path, 'wb') as out_file:
+            content = await file.read()
+            await out_file.write(content)
+        
+        # Update user's avatar URL
+        avatar_url = f"/uploads/avatars/{filename}"
+        current_user.avatar_url = avatar_url
+        current_user.updated_at = datetime.utcnow()
+        
+        db.commit()
+        
+        return JSONResponse(
+            content={"avatar_url": avatar_url},
+            status_code=status.HTTP_200_OK
+        )
+        
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Avatar upload error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to upload avatar"
+        )

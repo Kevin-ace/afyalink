@@ -22,3 +22,7 @@ email-validator
 
 # Optional: if you need additional features
 python-dotenv
+
+# Added from the code block
+aiofiles
+Pillow

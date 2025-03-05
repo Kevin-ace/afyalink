@@ -20,4 +20,8 @@ const DEV_CONFIG = {
 // You can add other environment configs here (PROD_CONFIG, etc.)
 
 // Export the appropriate config based on the current URL
-export const CONFIG = window.location.hostname === 'localhost' ? DEV_CONFIG : DEV_CONFIG; // Change this when you add production config
+export const CONFIG = {
+    API: {
+        BASE_URL: 'http://localhost:8000',  // Make sure this matches your backend
+    }
+};

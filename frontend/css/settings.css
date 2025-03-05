@@ -1,0 +1,59 @@
+/* Settings page specific styles */
+.settings-section {
+    margin-bottom: 2rem;
+}
+
+.form-switch {
+    padding-left: 2.5em;
+}
+
+.form-check-input {
+    cursor: pointer;
+}
+
+.card {
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem;
+}
+
+.card-header h5 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.text-muted {
+    font-size: 0.875rem;
+}
+
+/* Dark mode switch specific styles */
+#darkModeToggle {
+    width: 3rem;
+    height: 1.5rem;
+}
+
+.form-switch .form-check-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .col-md-8 {
+        padding: 0 1rem;
+    }
+} 

@@ -13,7 +13,7 @@ export class AuthService {
         });
 
         if (requireAuth) {
-            const token = localStorage.getItem('access_token');
+            const token = this.getAuthToken();
             if (token) {
                 headers.append('Authorization', `Bearer ${token}`);
             }
@@ -40,15 +40,8 @@ export class AuthService {
 
             return await response.json();
         } catch (error) {
-            DebugLogger.error('API Request Failed', error);
-            if (error instanceof APIError) {
-                throw error;
-            }
-            throw new APIError(
-                'Network error',
-                500,
-                { detail: error.message }
-            );
+            Logger.error('API Request Failed', error);
+            throw error;
         }
     }
 

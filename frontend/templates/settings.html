@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AfyaLink</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/settings.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/dark-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <!-- Navbar (same as dashboard) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
+                <img src="../assets/icons/afyalogo.png" alt="AfyaLink Logo" width="40" height="40" class="me-2">
+                <span class="brand-name">AfyaLink</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="facilities.html"><i class="fas fa-hospital me-1"></i>Facilities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="emergency.html"><i class="fas fa-ambulance me-1"></i>Emergency</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="insurance.html"><i class="fas fa-shield-alt me-1"></i>Insurance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="services.html"><i class="fas fa-stethoscope me-1"></i>Services</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="true">
+                            <span class="d-none d-md-inline" id="userName"><i class="fas fa-user me-1"></i>Profile</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item active" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-5 pt-5">
+        <h2 class="mb-4">Settings</h2>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Appearance Settings -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-paint-brush me-2"></i>Appearance</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Dark Mode</h6>
+                                <p class="text-muted small mb-0">Switch between light and dark themes</p>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-bell me-2"></i>Notifications</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="emailNotifications">
+                                <label class="form-check-label" for="emailNotifications">
+                                    Email Notifications
+                                </label>
+                            </div>
+                            <small class="text-muted">Receive email updates about your appointments</small>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="smsNotifications">
+                                <label class="form-check-label" for="smsNotifications">
+                                    SMS Notifications
+                                </label>
+                            </div>
+                            <small class="text-muted">Receive SMS alerts for important updates</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-shield-alt me-2"></i>Privacy</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="profileVisibility">
+                                <label class="form-check-label" for="profileVisibility">
+                                    Public Profile
+                                </label>
+                            </div>
+                            <small class="text-muted">Make your profile visible to other users</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { ThemeManager } from '../js/theme-manager.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize theme manager
+            const themeManager = new ThemeManager();
+            
+            // Set initial state of toggle based on current theme
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            darkModeToggle.checked = themeManager.isDarkMode();
+            
+            // Handle dark mode toggle
+            darkModeToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    themeManager.enableDarkMode();
+                } else {
+                    themeManager.disableDarkMode();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

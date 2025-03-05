@@ -1,10 +1,22 @@
-/* Common Styles */
+/* Add CSS variables for light theme */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --card-bg: #ffffff;
+    --navbar-bg: #ffffff;
+}
+
+/* Use CSS variables throughout your styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0 0 0 0;
     box-sizing: border-box;
-    background-color: #f4f4f4;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     padding-top: 80px; /* Adjust based on navbar height */
 }
 
@@ -136,4 +148,9 @@ input:focus {
 
 .text-responsive {
     font-size: clamp(14px, 2vw, 18px);
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
 }
