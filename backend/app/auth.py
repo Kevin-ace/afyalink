@@ -36,28 +36,19 @@ def get_password_hash(password: str) -> str:
     """
     return pwd_context.hash(password)
 
-def authenticate_user(username: str, password: str, db: Session) -> Optional[User]:
+def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
     """
     Authenticate a user with username/email and password
     """
     try:
-        # Try to find user by email first
-        user = db.query(User).filter(User.email == username).first()
-        
-        # If not found by email, try username
-        if not user:
-            user = db.query(User).filter(User.username == username).first()
-            
+        user = db.query(User).filter(User.email == email).first()
         if not user:
             return None
-            
-        if not verify_password(password, user.password_hash):
+        if not verify_password(password, user.hashed_password):
             return None
-            
         return user
-        
     except Exception as e:
-        logger.error(f"Authentication error: {str(e)}")
+        logger.error(f"Authentication error: {e}")
         return None
 
 def create_access_token(

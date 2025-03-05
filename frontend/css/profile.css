@@ -153,3 +153,58 @@ footer {
     margin-bottom: 1rem;
   }
 }
+
+/* Add placeholder styling */
+.placeholder-text {
+    color: #6c757d;
+    font-style: italic;
+    position: relative;
+}
+
+.placeholder-text::after {
+    content: ' (Loading...)';
+    font-size: 0.8em;
+    color: #dc3545;
+}
+
+/* Avatar styling */
+.profile-image img {
+    border: 3px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.profile-image img:hover {
+    transform: scale(1.05);
+}
+
+/* Loading state indicators */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.2) 50%,
+        rgba(255,255,255,0) 100%
+    );
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}

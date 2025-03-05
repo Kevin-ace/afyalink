@@ -32,6 +32,12 @@
 .navbar-brand .brand-name {
   font-size: 1.25rem;
   font-weight: bold;
+  color: #2c7da0;  /* Light blue color matching our theme */
+}
+
+/* Dark mode support for brand name */
+[data-theme="dark"] .brand-name {
+    color: #61a5c2;  /* Slightly lighter blue for dark mode */
 }
 
 .navbar-nav .nav-link {

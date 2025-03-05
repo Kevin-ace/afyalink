@@ -1,65 +1,30 @@
 import sys
 import os
-
-# Add the backend directory to the Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+import logging
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from app.routes import auth_routes, facilities_router, service_routes, insurance_routes, recommendation_routes, facilities
 from app.database import engine
 from app.models import Base
-import logging
-import logging.handlers
-import json
-from dotenv import load_dotenv
-import uvicorn
 
-
+# Setup logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 # Load environment variables
 load_dotenv()
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
-
-def setup_logging():
-    # Ensure logs directory exists
-    log_dir = os.path.join(os.path.dirname(__file__), '..', 'logs')
-    os.makedirs(log_dir, exist_ok=True)
-
-    # Configure logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            # Console Handler
-            logging.StreamHandler(),
-            
-            # Rotating File Handler
-            logging.handlers.RotatingFileHandler(
-                os.path.join(log_dir, 'app.log'),
-                maxBytes=10*1024*1024,  # 10 MB
-                backupCount=5,
-                encoding='utf-8'
-            )
-        ]
-    )
-
-    # Set logging levels for specific libraries to reduce noise
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
-    logging.getLogger('alembic').setLevel(logging.WARNING)
-    logging.getLogger('uvicorn').setLevel(logging.WARNING)
-
-# Call logging setup
-setup_logging()
-
+# Create FastAPI app
 app = FastAPI(
     title="Afyalink",
     description="Geolocation Health Facility Management System",
     version="0.1.0"
 )
+
+# Create all database tables
+Base.metadata.create_all(bind=engine)
 
 # Configure CORS
 app.add_middleware(

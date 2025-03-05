@@ -295,3 +295,74 @@ body {
       display: flex;
     }
   }
+
+.insights-container {
+    transition: opacity 0.3s ease;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.insight-item {
+    padding: 10px;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+    margin-bottom: 1rem;
+    background-color: var(--bg-secondary);
+}
+
+.insight-item:hover {
+    transform: translateX(5px);
+    background-color: var(--bg-hover);
+}
+
+.insight-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.insight-controls button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.insight-controls button:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Add smooth transitions for dark mode */
+.insight-item, .insight-icon {
+    transition: all 0.3s ease;
+}
+
+/* Dark mode specific styles */
+[data-theme="dark"] .insight-item {
+    background-color: var(--card-bg);
+}
+
+[data-theme="dark"] .insight-icon {
+    background-color: var(--primary-color);
+}
+
+/* Loading state */
+.insights-container.loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.insights-container.loading::after {
+    content: 'Loading health insights...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-secondary);
+}

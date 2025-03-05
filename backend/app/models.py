@@ -21,22 +21,20 @@ class User(Base):
     __tablename__ = 'users'
     
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String, nullable=False)
     first_name = Column(String)
     last_name = Column(String)
-    password_hash = Column(String)
-    is_active = Column(Boolean, default=True)
-    
-    # New fields
     id_number = Column(String, unique=True)
-    phone_number = Column(String)
-    emergency_contact = Column(String)
+    phone_number = Column(String, nullable=True)
+    emergency_contact = Column(String, nullable=True)
     insurance_details = Column(String, nullable=True)
     sha_details = Column(String, nullable=True)
-    avatar_url = Column(String, nullable=True)  # Store URL to avatar image
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    avatar_url = Column(String, nullable=True)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, nullable=True)
     
     # Optional relationship with Insurance if needed
     insurance_id = Column(Integer, ForeignKey('insurances.id'), nullable=True)

@@ -18,6 +18,8 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Health Insights Module -->
+    <script type="module" src="../js/dashboard.js"></script>
 </head>
 
 <body>
@@ -123,31 +125,24 @@
 
             <!-- Health Insights -->
             <div class="col-12 col-md-4">
-                <section class="health-insights mb-3">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Health Insights</h3>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Health Insights</h5>
-                            <div class="health-insights-content">
-                                <div class="insight-item">
-                                    <i class="fas fa-briefcase-medical"></i>
-                                    <p>Upcoming Health Screenings</p>
-                                </div>
-                                <div class="insight-item">
-                                    <i class="fas fa-user-md"></i>
-                                    <p>Recommended Specialists</p>
-                                </div>
-                                <div class="daily-health-tip">
-                                    <i class="fas fa-heartbeat"></i>
-                                    <h6>Daily Health Tip</h6>
-                                    <p id="daily-health-tip" class="text-muted">Loading health tip...</p>
-                                </div>
-                            </div>
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Health Insights</h5>
+                        <div class="insight-controls">
+                            <button class="btn btn-sm btn-outline-primary me-2" id="prevInsight">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" id="nextInsight">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
-                </section>
+                    <div class="card-body">
+                        <div id="insightsCarousel" class="insights-container">
+                            <!-- Insights will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

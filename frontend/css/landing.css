@@ -21,6 +21,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding-top: 0 !important;
 }
 
 .header {
@@ -47,21 +48,44 @@ body {
 }
 
 .hero-section {
-  position: relative;
-  overflow: hidden;
-  min-height: 70vh;
+  background: url('../assets/images/medical-banner-with-doctor-working-laptop.jpg') no-repeat center center;
+  background-size: cover;
+  color: white;
+  padding: 80px 0;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 2rem 0;
-  background: linear-gradient(135deg, var(--light-color) 0%, white 100%);
-  padding-top: 0px;
+  justify-content: flex-start;
+  position: relative;
 }
 
 .hero-content {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 30px 40px;
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  max-width: 850px;
+  width: 100%;
+  margin-left: 8%;
   animation: fadeInLeft 0.8s ease-out;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for AFYALINK text in hero container */
+.hero-content h1:first-of-type {
+  color: #2c9fff;  /* Bright blue color */
+  text-shadow: 0 0 10px rgba(44, 159, 255, 0.3);  /* Subtle glow effect */
+}
+
+/* Keep other headings white */
+.hero-content h1:not(:first-of-type) {
+  color: white;
+}
+
+.hero-content .display-4 {
+  font-size: calc(1.7rem + 1.5vw);
+  line-height: 1.3;
+  margin-bottom: 1.2rem;
 }
 
 .hero-image {
@@ -309,5 +333,33 @@ body {
   .hero-content .btn {
     width: 100%;
     margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-section {
+    padding: 60px 20px;
+    justify-content: center;
+  }
+  
+  .hero-content {
+    margin: 0 auto;
+    padding: 25px;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 40px 15px;
+  }
+  
+  .hero-content {
+    padding: 15px;
+  }
+  
+  .display-4 {
+    font-size: 1.8rem;
+    word-wrap: break-word;
   }
 }

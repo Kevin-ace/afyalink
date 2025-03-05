@@ -95,7 +95,7 @@ async def register_user(user: UserRegistration, db: Session = Depends(get_db)):
     try:
         new_user = User(
             **user.dict(exclude={'password'}),
-            password_hash=get_password_hash(user.password),
+            hashed_password=get_password_hash(user.password),
             is_active=True,
             created_at=datetime.utcnow()
         )
@@ -124,14 +124,9 @@ async def auth_options():
     return {"allowed": "POST"}
 
 @router.post("/login")
-async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db)
-):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     try:
-        # Authenticate user with the database session
-        user = authenticate_user(form_data.username, form_data.password, db)
-        
+        user = authenticate_user(db, form_data.username, form_data.password)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -139,7 +134,6 @@ async def login(
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        # Create access token
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={"sub": user.email},
