@@ -23,30 +23,31 @@
 }
 
 .facility-popup {
-    font-family: 'Arial', sans-serif;
-    max-width: 250px;
+    min-width: 200px;
+    padding: 10px;
 }
 
 .facility-popup h4 {
-    margin-bottom: 10px;
-    color: #007bff;
-    font-size: 16px;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 5px;
+    margin: 0 0 10px 0;
+    color: #333;
 }
 
 .facility-popup p {
     margin: 5px 0;
-    font-size: 14px;
-    color: #333;
+    color: #666;
+}
+
+.facility-popup button {
+    margin-top: 10px;
+    width: 100%;
 }
 
 .custom-marker {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 30px !important;
+    height: 30px !important;
     border-radius: 50%;
     background: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -55,20 +56,16 @@
 .user-location {
     background: #007bff;
     z-index: 1000;
+    border: 2px solid white;
 }
 
 .user-location i {
     color: white;
+    font-size: 16px;
 }
 
 .facility-location {
     background: #dc3545;
-    width: 30px !important;
-    height: 30px !important;
-    border-radius: 50%;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
     border: 2px solid white;
 }
 
@@ -114,7 +111,15 @@
     }
 }
 
+#map {
+    height: 500px;
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    z-index: 1;
+}
+
 .leaflet-div-icon {
-    background: transparent;
-    border: none;
+    background: transparent !important;
+    border: none !important;
 }

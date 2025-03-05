@@ -1,6 +1,7 @@
 import { CONFIG } from './config.js';
 import { APIError } from './error.js';
 import { DebugLogger } from './error.js';
+import { Logger } from './services/logger.js';
 
 export class AuthService {
     static BASE_URL = 'http://localhost:8000/auth';
@@ -53,6 +54,8 @@ export class AuthService {
 
     static async login(email, password) {
         try {
+            Logger.log(Logger.INFO, 'Attempting login', { email });
+            
             const formData = new URLSearchParams();
             formData.append('username', email);
             formData.append('password', password);
@@ -75,17 +78,21 @@ export class AuthService {
 
             const data = await response.json();
             this.storeAuthData(data);
-            window.location.href = '/dashboard.html'; // Redirect after successful login
+            
+            Logger.log(Logger.SUCCESS, 'Login successful', { userId: data.user.id });
+            window.location.href = 'http://localhost:63342/afyalink/frontend/templates/dashboard.html';
             return data;
 
         } catch (error) {
-            console.error('Login error:', error);
+            Logger.log(Logger.ERROR, 'Login failed', error);
             throw error;
         }
     }
 
     static async register(userData) {
         try {
+            Logger.log(Logger.INFO, 'Attempting registration', { email: userData.email });
+
             const response = await fetch(`${this.BASE_URL}/register`, {
                 method: 'POST',
                 headers: {
@@ -103,11 +110,12 @@ export class AuthService {
             }
 
             const data = await response.json();
-            window.location.href = '/login.html'; // Redirect to login after successful registration
+            Logger.log(Logger.SUCCESS, 'Registration successful', { email: userData.email });
+            window.location.href = 'http://localhost:63342/afyalink/frontend/templates/login.html';
             return data;
 
         } catch (error) {
-            console.error('Registration error:', error);
+            Logger.log(Logger.ERROR, 'Registration failed', error);
             throw error;
         }
     }
@@ -135,11 +143,13 @@ export class AuthService {
     static storeAuthData(data) {
         localStorage.setItem('auth_token', data.access_token);
         localStorage.setItem('user_data', JSON.stringify(data.user));
+        Logger.log(Logger.INFO, 'Auth data stored in localStorage');
     }
 
     static clearAuthData() {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user_data');
+        Logger.log(Logger.INFO, 'Auth data cleared from localStorage');
     }
 
     static getAuthToken() {
