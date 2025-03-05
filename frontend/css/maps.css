@@ -42,11 +42,39 @@
 }
 
 .custom-marker {
-    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.custom-marker:hover {
-    transform: scale(1.5);
+.user-location {
+    background: #007bff;
+    z-index: 1000;
+}
+
+.user-location i {
+    color: white;
+}
+
+.facility-location {
+    background: #dc3545;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+.facility-location i {
+    color: white;
+    font-size: 16px;
 }
 
 .facility-info-window {
@@ -84,4 +112,9 @@
     #kenya-map {
         height: 350px;
     }
+}
+
+.leaflet-div-icon {
+    background: transparent;
+    border: none;
 }

@@ -2,10 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func, or_
 from typing import List, Optional
+import logging
 
 from app.database import get_db
 from app.models import Facility, Insurance
 from app.schemas import FacilityResponse, InsuranceResponse
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/facilities", tags=["Facilities"])
 
@@ -57,35 +60,73 @@ def list_facilities(
     
     return facilities
 
-@router.get("/nearby", response_model=List[FacilityResponse])
-def find_nearby_facilities(
-    latitude: float = Query(..., description="Latitude of reference point"),
-    longitude: float = Query(..., description="Longitude of reference point"),
-    radius: float = Query(10, ge=1, le=100, description="Radius in kilometers"),
+@router.get("/nearby")
+async def get_nearby_facilities(
+    latitude: float,
+    longitude: float,
+    radius: float = 20,
     db: Session = Depends(get_db)
 ):
-    """
-    Find facilities within a specified radius using PostGIS
-    
-    Uses spherical distance calculation for accurate geospatial search
-    """
-    # Convert radius to meters
-    radius_meters = radius * 1000
-    
-    # Use PostGIS ST_DWithin for efficient geospatial search
-    nearby_facilities = (
-        db.query(Facility)
-        .filter(
-            func.ST_DWithin(
-                Facility.location, 
-                func.ST_MakePoint(longitude, latitude), 
-                radius_meters
+    """Get facilities near a specific location"""
+    try:
+        # Basic distance calculation using latitude and longitude
+        facilities = (
+            db.query(Facility)
+            .filter(
+                Facility.latitude.isnot(None),
+                Facility.longitude.isnot(None)
             )
+            .all()
         )
-        .all()
-    )
+
+        # Filter facilities within radius
+        nearby_facilities = []
+        for facility in facilities:
+            # Calculate distance using Haversine formula
+            distance = calculate_distance(
+                float(latitude),
+                float(longitude),
+                float(facility.latitude),
+                float(facility.longitude)
+            )
+            if distance <= radius:
+                facility_dict = {
+                    "id": facility.id,
+                    "facility_name": facility.facility_name,
+                    "facility_type": facility.facility_type,
+                    "latitude": float(facility.latitude),
+                    "longitude": float(facility.longitude),
+                    "location": facility.location,
+                    "district": facility.district,
+                    "distance": round(distance, 2)
+                }
+                nearby_facilities.append(facility_dict)
+
+        return nearby_facilities
+
+    except Exception as e:
+        logger.error(f"Error fetching nearby facilities: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching nearby facilities: {str(e)}"
+        )
+
+def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Calculate distance between two points using Haversine formula"""
+    from math import radians, sin, cos, sqrt, atan2
     
-    return nearby_facilities
+    R = 6371  # Earth's radius in kilometers
+
+    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+    
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1-a))
+    
+    distance = R * c
+    return distance
 
 @router.get("/insurances", response_model=List[InsuranceResponse])
 def list_insurances(
@@ -135,3 +176,12 @@ def get_insurance_details(
         raise HTTPException(status_code=404, detail="Insurance provider not found")
     
     return insurance
+
+# Example Flask endpoint
+@router.route('/facilities/facilities')
+def get_facilities():
+    lat = request.args.get('lat')
+    lng = request.args.get('lng')
+    # Implement logic to filter facilities based on lat and lng
+    facilities = filter_facilities_by_location(lat, lng)
+    return jsonify(facilities)

@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-from app.routes import auth_routes, facilities_router, service_routes, insurance_routes, recommendation_routes
+from app.routes import auth_routes, facilities_router, service_routes, insurance_routes, recommendation_routes, facilities
 from app.database import engine
 from app.models import Base
 import logging
@@ -61,17 +61,13 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# Get allowed origins from environment
-allowed_origins = os.getenv('ALLOWED_ORIGINS', '["http://127.0.0.1:5500"]')
-origins = json.loads(allowed_origins)
-
-# Add CORS middleware
+# Update CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Use the origins from the environment variable
+    allow_origins=["http://localhost:63342", "http://localhost:3000", "http://127.0.0.1:63342"],  # Add all your frontend origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 # Include route routers
@@ -80,6 +76,7 @@ app.include_router(facilities_router, prefix="/facilities", tags=["Facilities"])
 app.include_router(service_routes, prefix="/services", tags=["Services"])
 app.include_router(insurance_routes, prefix="/insurances", tags=["Insurances"])
 app.include_router(recommendation_routes, prefix="/recommendations", tags=["Recommendations"])
+app.include_router(facilities.router, prefix="/facilities", tags=["facilities"])
 
 @app.get("/")
 async def root():
@@ -100,6 +97,3 @@ async def get_health_facilities_csv():
         media_type='text/csv', 
         filename='Health_facilities.csv'
     )
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

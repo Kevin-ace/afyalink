@@ -2,8 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Tabl
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
-
-Base = declarative_base()
+from app.database import Base
 
 # Association tables for many-to-many relationships
 facility_service_association = Table(
@@ -24,17 +23,17 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
+    first_name = Column(String)
+    last_name = Column(String)
     password_hash = Column(String)
     is_active = Column(Boolean, default=True)
     
     # New fields
-    first_name = Column(String)
-    last_name = Column(String)
     id_number = Column(String, unique=True)
     emergency_contact = Column(String)
     insurance_details = Column(String, nullable=True)
     sha_details = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime)
     
     # Optional relationship with Insurance if needed
     insurance_id = Column(Integer, ForeignKey('insurances.id'), nullable=True)
@@ -158,3 +157,11 @@ PREDEFINED_INSURANCES = [
         'coverage_description': 'Accredited public and private hospitals for teaching staff.'
     }
 ]
+
+from pydantic import BaseModel
+
+class MyModel(BaseModel):
+    # ...existing code...
+
+    class Config:
+        from_attributes = True

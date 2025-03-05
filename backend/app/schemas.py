@@ -34,13 +34,19 @@ class UserCreate(UserBase):
 
 class UserResponse(BaseModel):
     id: int
-    email: str
     username: str
-    created_at: datetime
+    email: str
+    first_name: str
+    last_name: str
+    id_number: str
+    emergency_contact: str
+    insurance_details: Optional[str] = None
+    sha_details: Optional[str] = None
     is_active: bool
+    created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Facility Schemas
 class FacilityBase(BaseModel):
@@ -107,17 +113,30 @@ class UserRegistration(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
-    id_number: str  # Add this line
+    id_number: str
     emergency_contact: str
     insurance_details: Optional[str] = None
     sha_details: Optional[str] = None
     password: str = Field(..., min_length=8)
 
+    class Config:
+        from_attributes = True
+
 class UserCredentials(BaseModel):
     email: str
     password: str
+
+    class Config:
+        from_attributes = True
 
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
     user: UserResponse
+
+    class Config:
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

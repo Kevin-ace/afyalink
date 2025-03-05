@@ -3,29 +3,36 @@ import { APIError } from './error.js';
 import { DebugLogger } from './error.js';
 
 export class AuthService {
-    static async request(endpoint, method, body = null, requireAuth = false) {
-        const headers = {
-            'Content-Type': 'application/json',
-            ...(requireAuth ? this.getAuthHeader() : {})
-        };
+    static BASE_URL = 'http://localhost:8000/auth';
 
-        DebugLogger.log('info', `Sending request to ${endpoint} with body:`, body);
+    static async request(endpoint, method, body = null, requireAuth = false) {
+        const headers = new Headers({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        });
+
+        if (requireAuth) {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                headers.append('Authorization', `Bearer ${token}`);
+            }
+        }
 
         try {
-            const response = await fetch(`http://localhost:8000${endpoint}`, {
+            const response = await fetch(`${CONFIG.API.BASE_URL}${endpoint}`, {
                 method,
                 headers,
-                body: body ? JSON.stringify(body) : null
+                body: body ? JSON.stringify(body) : null,
+                mode: 'cors',
+                credentials: 'include',
+                cache: 'no-cache'
             });
 
-            DebugLogger.log('info', `Received response from ${endpoint}:`, response);
-
             if (!response.ok) {
-                const errorData = await response.json();
-                DebugLogger.error('API Request Failed', errorData);
+                const errorData = await response.json().catch(() => ({}));
                 throw new APIError(
-                    errorData.detail || 'Request failed', 
-                    response.status, 
+                    errorData.detail || 'Request failed',
+                    response.status,
                     errorData
                 );
             }
@@ -33,84 +40,114 @@ export class AuthService {
             return await response.json();
         } catch (error) {
             DebugLogger.error('API Request Failed', error);
-            return {
-                success: false,
-                message: error.message || 'An unexpected error occurred'
-            };
+            if (error instanceof APIError) {
+                throw error;
+            }
+            throw new APIError(
+                'Network error',
+                500,
+                { detail: error.message }
+            );
         }
-    }
-
-    static getAuthHeader() {
-        const token = localStorage.getItem(CONFIG.STORAGE.ACCESS_TOKEN);
-        return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
     static async login(email, password) {
         try {
-            const data = await this.request('/auth/login', 'POST', { email, password });
-            if (data.access_token) {
-                this.storeAuthData(data);
-                console.log('Login successful', data);
-                window.location.href = '/dashboard.html'; // Redirect to dashboard after login
+            const formData = new URLSearchParams();
+            formData.append('username', email);
+            formData.append('password', password);
+
+            const response = await fetch(`${this.BASE_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                body: formData,
+                credentials: 'include',
+                mode: 'cors'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Login failed');
             }
+
+            const data = await response.json();
+            this.storeAuthData(data);
+            window.location.href = '/dashboard.html'; // Redirect after successful login
             return data;
+
         } catch (error) {
-            console.error('Login failed:', error.message || JSON.stringify(error));
+            console.error('Login error:', error);
+            throw error;
+        }
+    }
+
+    static async register(userData) {
+        try {
+            const response = await fetch(`${this.BASE_URL}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(userData),
+                credentials: 'include',
+                mode: 'cors'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Registration failed');
+            }
+
+            const data = await response.json();
+            window.location.href = '/login.html'; // Redirect to login after successful registration
+            return data;
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            throw error;
+        }
+    }
+
+    static async logout() {
+        try {
+            const response = await fetch(`${this.BASE_URL}/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Logout failed');
+            }
+
+            this.clearAuthData();
+            window.location.href = '/login.html';
+
+        } catch (error) {
+            console.error('Logout error:', error);
             throw error;
         }
     }
 
     static storeAuthData(data) {
-        localStorage.setItem(CONFIG.STORAGE.ACCESS_TOKEN, data.access_token);
-        localStorage.setItem(CONFIG.STORAGE.TOKEN_TYPE, data.token_type);
-        localStorage.setItem(CONFIG.STORAGE.USER_ID, data.user.id);
-        localStorage.setItem(CONFIG.STORAGE.USER_CREATED_AT, data.user.created_at);
-        localStorage.setItem(CONFIG.STORAGE.USER_IS_ACTIVE, data.user.is_active);
+        localStorage.setItem('auth_token', data.access_token);
+        localStorage.setItem('user_data', JSON.stringify(data.user));
     }
 
-    static async register(userData) {
-        return this.request('/auth/register', 'POST', userData);
+    static clearAuthData() {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_data');
     }
 
-    static async refreshToken() {
-        try {
-            const refreshToken = localStorage.getItem('refresh_token');
-            if (!refreshToken) {
-                throw new Error('No refresh token available');
-            }
-
-            const response = await this.request(
-                '/auth/refresh', 
-                'POST', 
-                { refresh_token: refreshToken }
-            );
-
-            if (!response.success) {
-                throw new Error(response.message);
-            }
-
-            this.storeAuthData(response.data);
-            return response.data.access_token;
-        } catch (error) {
-            DebugLogger.error('Token Refresh Failed', error);
-            this.logout();
-            return {
-                success: false,
-                message: error.message || 'Token refresh failed'
-            };
-        }
-    }
-
-    static logout() {
-        // Clear all authentication-related local storage
-        Object.values(CONFIG.STORAGE).forEach(key => 
-            localStorage.removeItem(key)
-        );
-        window.location.href = '/login.html';
+    static getAuthToken() {
+        return localStorage.getItem('auth_token');
     }
 
     static isAuthenticated() {
-        return !!localStorage.getItem(CONFIG.STORAGE.ACCESS_TOKEN);
+        return !!this.getAuthToken();
     }
 }
 
@@ -124,4 +161,3 @@ async function loginUser(email, password) {
         console.error('Error during login:', error);
     }
 }
-

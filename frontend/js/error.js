@@ -60,4 +60,12 @@ export class DebugLogger {
             console.error('Failed to send error to backend:', transportError);
         });
     }
+
+    static handleValidationError(error) {
+        if (error.status === 422) {
+            console.warn('Validation Error:', error.data);
+            return error.data;
+        }
+        throw error;
+    }
 }

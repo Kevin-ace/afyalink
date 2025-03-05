@@ -1,9 +1,13 @@
-// Configuration Management with Environment Support
-const getEnvVariable = (key, defaultValue) => {
-    return window.ENV?.[key] || defaultValue;
-};
-
-export const CONFIG = {
+// Environment-specific configuration
+const DEV_CONFIG = {
+    API: {
+        BASE_URL: 'http://localhost:8000',
+        ENDPOINTS: {
+            LOGIN: '/auth/login',
+            REGISTER: '/auth/register',
+            REFRESH: '/auth/refresh'
+        }
+    },
     STORAGE: {
         ACCESS_TOKEN: 'access_token',
         TOKEN_TYPE: 'token_type',
@@ -12,3 +16,8 @@ export const CONFIG = {
         USER_IS_ACTIVE: 'user_is_active'
     }
 };
+
+// You can add other environment configs here (PROD_CONFIG, etc.)
+
+// Export the appropriate config based on the current URL
+export const CONFIG = window.location.hostname === 'localhost' ? DEV_CONFIG : DEV_CONFIG; // Change this when you add production config
