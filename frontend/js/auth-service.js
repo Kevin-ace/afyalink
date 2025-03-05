@@ -159,6 +159,93 @@ export class AuthService {
     static isAuthenticated() {
         return !!this.getAuthToken();
     }
+
+    static async getUserProfile() {
+        try {
+            Logger.log(Logger.INFO, 'Fetching user profile');
+            
+            const response = await fetch(`${this.BASE_URL}/profile`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'Accept': 'application/json'
+                },
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to fetch profile');
+            }
+
+            const userData = await response.json();
+            Logger.log(Logger.SUCCESS, 'Profile fetched successfully');
+            return userData;
+
+        } catch (error) {
+            Logger.log(Logger.ERROR, 'Error fetching profile', error);
+            throw error;
+        }
+    }
+
+    static async updateProfile(data) {
+        try {
+            Logger.log(Logger.INFO, 'Updating user profile', data);
+            
+            const response = await fetch(`${this.BASE_URL}/profile/update`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data),
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to update profile');
+            }
+
+            const updatedData = await response.json();
+            Logger.log(Logger.SUCCESS, 'Profile updated successfully');
+            return updatedData;
+
+        } catch (error) {
+            Logger.log(Logger.ERROR, 'Error updating profile', error);
+            throw error;
+        }
+    }
+
+    static async updateAvatar(formData) {
+        try {
+            Logger.log(Logger.INFO, 'Uploading new avatar');
+            
+            const response = await fetch(`${this.BASE_URL}/profile/avatar`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.getAuthToken()}`
+                    // Note: Don't set Content-Type header when sending FormData
+                },
+                body: formData,
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to upload avatar');
+            }
+
+            const data = await response.json();
+            Logger.log(Logger.SUCCESS, 'Avatar updated successfully');
+            return data;
+
+        } catch (error) {
+            Logger.log(Logger.ERROR, 'Error uploading avatar', error);
+            throw error;
+        }
+    }
 }
 
 // The following function can be used to trigger login using the AuthService

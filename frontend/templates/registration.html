@@ -166,14 +166,14 @@
             event.preventDefault();
 
             const userData = {
-                username: document.getElementById('email').value.split('@')[0], // Assuming username is derived from email
+                username: document.getElementById('email').value.split('@')[0],
                 email: document.getElementById('email').value,
                 first_name: document.getElementById('firstName').value,
                 last_name: document.getElementById('lastName').value,
                 id_number: document.getElementById('idNumber').value,
                 emergency_contact: document.getElementById('emergencyContact').value,
                 insurance_details: document.getElementById('insuranceDetails').value,
-                sha_details: '', // Assuming SHA details are not provided in the form
+                sha_details: '',
                 password: document.getElementById('password').value
             };
 

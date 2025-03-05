@@ -111,7 +111,7 @@
                 
                 if (response.access_token) {
                     AuthService.storeAuthData(response);
-                    window.location.href = '/dashboard.html';
+                    window.location.href = 'dashboard.html';
                 } else {
                     throw new Error('Invalid response from server');
                 }
