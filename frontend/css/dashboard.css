@@ -19,13 +19,35 @@ body {
 }
 
 .search-section {
-    text-align: center;
-    padding: 20px;
-    background-color: #eef2f7;
+    position: fixed;
+    top: 70px; /* navbar (60px) + 10px margin */
+    left: 10px;
+    width: 400px;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 1001;
 }
 
 .search-section .input-group {
-  max-width: 100%;
+    margin-bottom: 10px;
+}
+
+.search-section input {
+    border: 1px solid #ddd;
+    box-shadow: none;
+}
+
+.search-section .btn {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.search-section .btn:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
 }
 
 .search-title {
@@ -50,7 +72,12 @@ body {
 }
 
 .map-section {
-    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
 }
 
 .map-section .card {
@@ -60,18 +87,15 @@ body {
 }
 
 .map-container {
-  height: 450px;
-  width: 100%;
-  background-color: #e9ecef;
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    flex: 1 1 calc(100% - 360px); /* Full width minus sidebar */
+    position: relative;
+    height: 70vh; /* Reduce height to make room for insurance section */
+    min-height: 500px;
 }
 
 #map {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 
 @media (min-width: 1200px) {
@@ -178,16 +202,18 @@ body {
 }
 
 .insight-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
-  transition: background-color 0.3s ease;
+  transition: transform 0.2s ease;
+  margin-bottom: 1rem;
+  background-color: var(--light-color);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .insight-item:hover {
-  background-color: var(--light-color);
+  transform: translateX(5px);
+  background-color: white;
+  border-color: var(--primary-color);
 }
 
 .insight-item i {
@@ -297,22 +323,23 @@ body {
   }
 
 .insights-container {
-    transition: opacity 0.3s ease;
-    max-height: 400px;
+    max-height: calc(100vh - 200px);
     overflow-y: auto;
 }
 
 .insight-item {
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     transition: transform 0.2s ease;
     margin-bottom: 1rem;
-    background-color: var(--bg-secondary);
+    background-color: var(--light-color);
+    border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .insight-item:hover {
     transform: translateX(5px);
-    background-color: var(--bg-hover);
+    background-color: white;
+    border-color: var(--primary-color);
 }
 
 .insight-icon {
@@ -322,7 +349,7 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: var(--primary-color);
+    background-color: var(--light-color);
     color: white;
 }
 
@@ -330,6 +357,10 @@ body {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
     transition: all 0.3s ease;
+    background-color: white;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 4px;
 }
 
 .insight-controls button:hover {
@@ -365,4 +396,407 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--text-secondary);
+}
+
+/* Style for overlaying components */
+.overlay-container {
+    position: fixed;
+    top: 60px; /* navbar (50px) + 10px margin */
+    right: 10px;
+    width: 360px;
+    max-height: calc(100vh - 70px);
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 1001;
+}
+
+.overlay-container .card {
+    border: none;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.overlay-container .card-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    border-bottom: none;
+}
+
+.overlay-container .card-body {
+    padding: 15px;
+}
+
+/* Insurance filter styles */
+.insurance-filter {
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--light-color);
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.insurance-filter select {
+    border: 1px solid #ddd;
+    background: white;
+    font-size: 14px;
+    padding: 8px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.insurance-filter select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(44, 125, 160, 0.2);
+}
+
+/* Update navbar styles for transparency and reduced height */
+.navbar {
+    background-color: white !important;
+    height: 60px;
+    min-height: 60px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    padding: 0 8px;
+}
+
+/* Adjust navbar content for reduced height */
+.navbar .container-fluid {
+    padding: 0;
+    height: 100%;
+}
+
+.navbar-brand {
+    padding: 0;
+    font-size: 1rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+}
+
+.navbar .nav-link {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-size: 0.9rem; /* Slightly larger font size */
+}
+
+/* Add some hover effects for better UX */
+.search-section:hover,
+.overlay-container:hover {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-section {
+        top: 70px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+    }
+    
+    .overlay-container {
+        left: 10px;
+        right: 10px;
+        width: auto;
+        bottom: 10px;
+        top: auto;
+        max-height: 40vh;
+    }
+}
+
+/* Main layout containers */
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    height: calc(100vh - 60px); /* Full height minus navbar */
+    margin-top: 60px; /* Space for navbar */
+    overflow: hidden;
+}
+
+.main-content-section {
+    flex: 1;
+    min-width: 0; /* Prevent flex item from overflowing */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Map container */
+.map-container {
+    position: relative;
+    height: 65vh; /* Reduced to make room for insurance section */
+    min-height: 400px;
+    width: 100%;
+}
+
+.map-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+/* Search overlay */
+.search-section {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 300px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+/* Insurance details section */
+.insurance-details-container {
+    flex: 1;
+    height: 35vh; /* Take remaining vertical space */
+    overflow-y: auto;
+    padding: 20px;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* Right sidebar */
+.sidebar-container {
+    width: 360px;
+    height: calc(100vh - 60px);
+    background: white;
+    border-left: 1px solid #e0e0e0;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* Health Insights styling */
+.health-insights {
+    margin-bottom: 20px;
+}
+
+.health-insights .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.health-insights h5 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.insight-controls button {
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 4px;
+}
+
+.insight-controls button:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.insight-item {
+    padding: 15px;
+    background: var(--light-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.insight-item:hover {
+    transform: translateX(5px);
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.insight-item i {
+    font-size: 24px;
+    margin-right: 15px;
+    color: var(--primary-color);
+}
+
+.insight-content {
+    flex: 1;
+}
+
+.insight-content h6 {
+    margin: 0 0 5px 0;
+    color: var(--text-color);
+}
+
+.insight-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Insurance table styling */
+.insurance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+}
+
+.insurance-table th,
+.insurance-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.insurance-table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .main-content-section {
+        height: auto;
+    }
+
+    .map-container {
+        height: 50vh;
+    }
+
+    .insurance-details-container {
+        height: auto;
+        max-height: 40vh;
+    }
+
+    .sidebar-container {
+        width: 100%;
+        height: auto;
+        max-height: 40vh;
+        border-left: none;
+        border-top: 1px solid #e0e0e0;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-section {
+        width: calc(100% - 40px);
+    }
+}
+
+/* Insurance badges styling */
+.insurance-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: #f8f9fa;
+    border: 1px solid #2c7da0;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #2c7da0;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.insurance-badge:hover {
+    background-color: #2c7da0;
+    color: white;
+}
+
+.insurance-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+/* Facility popup styling */
+.facility-popup {
+    padding: 15px;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.facility-popup h5 {
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--primary-color);
+}
+
+.facility-popup .info-section {
+    margin-bottom: 12px;
+}
+
+.facility-popup .info-label {
+    font-weight: 500;
+    color: #666;
+    font-size: 0.875rem;
+}
+
+/* Insurance tooltip */
+.insurance-tooltip {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 250px;
+    z-index: 1000;
+    display: none;
+}
+
+.insurance-badge:hover + .insurance-tooltip {
+    display: block;
+}
+
+/* Override Leaflet's default popup styles */
+.leaflet-popup-content-wrapper {
+    padding: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    width: 100% !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+    top: 10px;
+    right: 10px;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+    color: #000;
+    background: #f0f0f0;
+    border-radius: 50%;
+}
+
+.facility-popup-container {
+    margin: 0;
+    padding: 0;
 }

@@ -88,64 +88,95 @@
     </div>
 
     <!-- Main content -->
-    <main class="container-fluid px-4 py-3">
-        <div class="row g-3">
-            <div class="col-12 col-md-8">
-                <!-- Search Section -->
-                <section class="search-section mb-3">
-                    <h2 class="section-title">Find Healthcare Services</h2>
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search hospitals, clinics, specialists..." id="search-input">
-                        <button class="btn btn-primary" type="button"><i class="fas fa-search"></i> Search</button>
+    <div class="dashboard-container">
+        <!-- Left section for map and insurance details -->
+        <div class="main-content-section">
+            <!-- Map Container -->
+            <div class="map-container">
+                <section class="map-section">
+                    <div id="map"></div>
+                </section>
+
+                <!-- Search Section (overlay on map) -->
+                <section class="search-section">
+                    <h2 class="section-title h5 mb-3">Find Healthcare Services</h2>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search hospitals, clinics..." id="search-input">
+                        <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
                     </div>
-                </section>
-
-                <!-- Map Section -->
-                <section class="map-section mb-3">
-                    <h2 class="section-title">Health Facilities in Kenya</h2>
-                    <div id="map" style="height: 500px; width: 100%;"></div>
-                </section>
-
-                <!-- Quick Actions -->
-                <section class="quick-actions mb-3">
-                    <div class="row g-3">
-                        <div class="col-4">
-                            <div class="card quick-action-card h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-hospital"></i>
-                                    <h5 class="card-title d-none d-md-block">Nearby Hospitals</h5>
-                                    <p class="card-text d-md-none">Hospitals</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Other Quick Actions -->
+                    
+                    <!-- Insurance filter -->
+                    <div class="insurance-filter">
+                        <select class="form-select" id="insurance-filter">
+                            <option value="">All Insurance Providers</option>
+                        </select>
                     </div>
                 </section>
             </div>
 
-            <!-- Health Insights -->
-            <div class="col-12 col-md-4">
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Health Insights</h5>
-                        <div class="insight-controls">
-                            <button class="btn btn-sm btn-outline-primary me-2" id="prevInsight">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-primary" id="nextInsight">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
+            <!-- Insurance Details Section -->
+            <div class="insurance-details-container">
+                <h3>Insurance Coverage Details</h3>
+                <table class="insurance-table">
+                    <thead>
+                        <tr>
+                            <th>Insurance Provider</th>
+                            <th>Coverage Type</th>
+                            <th>Details</th>
+                            <th>Facility Types</th>
+                        </tr>
+                    </thead>
+                    <tbody id="insurance-table-body">
+                        <!-- Will be populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="sidebar-container">
+            <!-- Health Insights Section -->
+            <div class="health-insights">
+                <div class="header">
+                    <h5>Health Insights</h5>
+                    <div class="insight-controls">
+                        <button id="prevInsight">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="nextInsight">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="insightsCarousel">
+                    <div class="insight-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div class="insight-content">
+                            <h6>Digital Wellness</h6>
+                            <p>Limit screen time before bed to improve sleep quality and reduce eye strain.</p>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div id="insightsCarousel" class="insights-container">
-                            <!-- Insights will be dynamically inserted here -->
+
+                    <div class="insight-item">
+                        <i class="fas fa-dumbbell"></i>
+                        <div class="insight-content">
+                            <h6>Joint Health</h6>
+                            <p>Include stretching exercises in your daily routine to maintain flexibility.</p>
+                        </div>
+                    </div>
+
+                    <div class="insight-item">
+                        <i class="fas fa-lungs"></i>
+                        <div class="insight-content">
+                            <h6>Respiratory Health</h6>
+                            <p>Practice deep breathing exercises daily to improve lung capacity and reduce stress.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <!-- Leaflet Map Script -->
     <script>
@@ -217,6 +248,34 @@
         // Call the function when page loads
         document.addEventListener('DOMContentLoaded', updateUserInfo);
     </script>
+
+    <!-- Facility Details Template -->
+    <template id="facility-popup-template">
+        <div class="facility-popup">
+            <h5 class="facility-name"></h5>
+            
+            <div class="info-section">
+                <div class="info-label">Type</div>
+                <div class="facility-type"></div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-label">Location</div>
+                <div class="facility-location"></div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-label">Accepted Insurance</div>
+                <div class="insurance-list">
+                    <!-- Insurance badges will be inserted here -->
+                </div>
+            </div>
+            
+            <button class="btn btn-primary btn-sm mt-3 w-100" onclick="showFacilityDetails(this.dataset.facilityId)">
+                More Details
+            </button>
+        </div>
+    </template>
 </body>
 
 </html>

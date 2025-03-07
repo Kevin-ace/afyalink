@@ -9,37 +9,14 @@ from app.schemas import InsuranceResponse, FacilityResponse
 router = APIRouter(prefix="/insurances", tags=["Insurances"])
 
 @router.get("/", response_model=List[InsuranceResponse])
-def list_insurances(
-    db: Session = Depends(get_db),
-    type: Optional[str] = Query(None, description="Filter insurances by type"),
-    name: Optional[str] = Query(None, description="Filter insurances by name")
-):
-    """
-    Retrieve insurance providers with optional filtering
-    """
-    query = db.query(Insurance)
-    
-    if type:
-        query = query.filter(Insurance.type.ilike(f"%{type}%"))
-    
-    if name:
-        query = query.filter(Insurance.name.ilike(f"%{name}%"))
-    
-    return query.all()
+def list_insurances(db: Session = Depends(get_db)):
+    return db.query(Insurance).all()
 
 @router.get("/{insurance_id}", response_model=InsuranceResponse)
-def get_insurance_details(
-    insurance_id: int, 
-    db: Session = Depends(get_db)
-):
-    """
-    Get detailed information about a specific insurance provider
-    """
+def get_insurance(insurance_id: int, db: Session = Depends(get_db)):
     insurance = db.query(Insurance).filter(Insurance.id == insurance_id).first()
-    
     if not insurance:
-        raise HTTPException(status_code=404, detail="Insurance provider not found")
-    
+        raise HTTPException(status_code=404, detail="Insurance not found")
     return insurance
 
 @router.get("/{insurance_id}/facilities", response_model=List[FacilityResponse])

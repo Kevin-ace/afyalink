@@ -177,6 +177,22 @@ def get_insurance_details(
     
     return insurance
 
+@router.get("/facilities/{facility_id}/insurances", response_model=List[InsuranceResponse])
+def get_facility_insurances(facility_id: int, db: Session = Depends(get_db)):
+    """Get all insurance providers accepted at a specific facility"""
+    facility = db.query(Facility).filter(Facility.id == facility_id).first()
+    if not facility:
+        raise HTTPException(status_code=404, detail="Facility not found")
+    return facility.insurances
+
+@router.get("/insurances/{insurance_id}/facilities", response_model=List[FacilityResponse])
+def get_insurance_facilities(insurance_id: int, db: Session = Depends(get_db)):
+    """Get all facilities that accept a specific insurance provider"""
+    insurance = db.query(Insurance).filter(Insurance.id == insurance_id).first()
+    if not insurance:
+        raise HTTPException(status_code=404, detail="Insurance not found")
+    return insurance.facilities
+
 # Example Flask endpoint
 @router.route('/facilities/facilities')
 def get_facilities():

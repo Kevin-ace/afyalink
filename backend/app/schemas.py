@@ -6,17 +6,18 @@ import re
 # Insurance Schemas
 class InsuranceBase(BaseModel):
     name: str
-    type: str
-    coverage_description: Optional[str] = None
+    details: str
+    notes: Optional[str] = None
+    allowed_facilities: str
 
 class InsuranceCreate(InsuranceBase):
     pass
 
 class InsuranceResponse(InsuranceBase):
     id: int
-
+    
     class Config:
-        from_attributes = True  # Updated from orm_mode to from_attributes
+        from_attributes = True
 
 # User Schemas
 class UserBase(BaseModel):
@@ -66,6 +67,10 @@ class FacilityBase(BaseModel):
     global_id: Optional[str] = None
     x: Optional[float] = None
     y: Optional[float] = None
+    insurances: List[InsuranceResponse] = []
+
+    class Config:
+        from_attributes = True
 
 class FacilityCreate(FacilityBase):
     pass

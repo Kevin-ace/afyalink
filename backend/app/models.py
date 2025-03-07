@@ -95,8 +95,9 @@ class Insurance(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True)
-    type = Column(String)  # Public or Private
-    coverage_description = Column(Text)
+    details = Column(Text)
+    notes = Column(Text, nullable=True)
+    allowed_facilities = Column(Text)
     
     # Many-to-many relationship with facilities
     facilities = relationship(

@@ -119,6 +119,79 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function createFacilityPopupContent(facility) {
+        // Normalize facility data to handle both API and CSV formats
+        const facilityData = {
+            name: facility.facility_name || facility.name || facility['Facility Name'] || 'N/A',
+            type: facility.facility_type || facility.type || facility['Facility Type'] || 'N/A',
+            location: facility.location || facility['Location'] || facility.district || facility['District'] || 'N/A',
+            insurances: facility.insurances || []
+        };
+
+        // Create insurance badges if available
+        let insuranceContent = '<em>No insurance information available</em>';
+        if (Array.isArray(facilityData.insurances) && facilityData.insurances.length > 0) {
+            insuranceContent = facilityData.insurances
+                .map(ins => `
+                    <div class="insurance-badge" 
+                         title="${ins.details || 'No details available'}">
+                        ${ins.name}
+                    </div>
+                `).join('');
+        }
+
+        // Build popup content
+        const content = `
+            <div class="facility-popup">
+                <div style="margin-bottom: 15px;">
+                    <h5 style="margin: 0 0 10px 0; color: #2c7da0; font-weight: 600;">
+                        ${facilityData.name}
+                    </h5>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    <div style="font-weight: 500;">Type:</div>
+                    <div>${facilityData.type}</div>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    <div style="font-weight: 500;">Location:</div>
+                    <div>${facilityData.location}</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: 500; margin-bottom: 5px;">Accepted Insurance:</div>
+                    <div class="insurance-list" style="display: flex; flex-wrap: wrap; gap: 5px;">
+                        ${insuranceContent}
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-sm" 
+                        style="width: 100%; margin-top: 10px;"
+                        onclick="showFacilityDetails(${facility.id || facility['Facility Number']})">
+                    More Details
+                </button>
+            </div>
+        `;
+
+        return content;
+    }
+
+    // Add these helper functions for tooltips
+    function showTooltip(event, content) {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'insurance-tooltip';
+        tooltip.textContent = content;
+        tooltip.style.left = `${event.pageX + 10}px`;
+        tooltip.style.top = `${event.pageY + 10}px`;
+        document.body.appendChild(tooltip);
+    }
+
+    function hideTooltip() {
+        const tooltips = document.querySelectorAll('.insurance-tooltip');
+        tooltips.forEach(tooltip => tooltip.remove());
+    }
+
     function addFacilitiesToMap(facilities) {
         Logger.log(Logger.INFO, 'Adding facilities to map', { count: facilities.length });
         
@@ -136,7 +209,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     })
                 });
 
-                marker.bindPopup(createFacilityPopupContent(facility));
+                // Create popup with specific options
+                const popup = L.popup({
+                    maxWidth: 300,
+                    minWidth: 280,
+                    className: 'facility-popup-wrapper',
+                    closeButton: true,
+                    autoClose: true,
+                    closeOnEscapeKey: true,
+                }).setContent(createFacilityPopupContent(facility));
+
+                marker.bindPopup(popup);
                 facilitiesLayer.addLayer(marker);
             }
         });
@@ -145,18 +228,10 @@ document.addEventListener("DOMContentLoaded", function () {
         Logger.log(Logger.SUCCESS, 'Facilities added to map');
     }
 
-    function createFacilityPopupContent(facility) {
-        return `
-            <div class="facility-popup">
-                <h4>${facility.facility_name || facility.name || facility['Facility Name']}</h4>
-                <p><strong>Type:</strong> ${facility.facility_type || facility.type || facility['Facility Type'] || 'N/A'}</p>
-                <p><strong>Location:</strong> ${facility.location || facility['LOCATION'] || 'N/A'}</p>
-                <p><strong>District:</strong> ${facility.district || facility['District'] || 'N/A'}</p>
-                <button class="btn btn-primary btn-sm" onclick="window.location.href='booking.html?facility=${facility.id || facility['Facility Number']}'">
-                    Book Appointment
-                </button>
-            </div>
-        `;
+    function showFacilityDetails(facilityId) {
+        // Implement facility details view
+        console.log(`Show details for facility ${facilityId}`);
+        // You can implement a modal or sidebar view here
     }
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -174,4 +249,78 @@ document.addEventListener("DOMContentLoaded", function () {
     function deg2rad(deg) {
         return deg * (Math.PI/180);
     }
+
+    // Add insurance filter functionality
+    async function loadInsuranceFilters() {
+        try {
+            const response = await fetch('http://localhost:8000/facilities/insurances');
+            const insurances = await response.json();
+            
+            const filterSelect = document.getElementById('insurance-filter');
+            insurances.forEach(insurance => {
+                const option = document.createElement('option');
+                option.value = insurance.id;
+                option.textContent = insurance.name;
+                filterSelect.appendChild(option);
+            });
+
+            // Add event listener for insurance filter
+            filterSelect.addEventListener('change', async () => {
+                const selectedInsurance = filterSelect.value;
+                const searchTerm = document.getElementById('search-input').value;
+                
+                // Clear existing markers
+                facilitiesLayer.clearLayers();
+                
+                // Fetch facilities with insurance filter
+                const facilities = await fetchFacilities(searchTerm, selectedInsurance);
+                addFacilitiesToMap(facilities);
+            });
+        } catch (error) {
+            console.error('Error loading insurance filters:', error);
+        }
+    }
+
+    // Update facility fetching to include insurance filter
+    async function fetchFacilities(searchTerm = '', insuranceId = '') {
+        const params = new URLSearchParams({
+            name: searchTerm,
+            insurance_id: insuranceId
+        });
+
+        try {
+            const response = await fetch(`http://localhost:8000/facilities?${params}`);
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching facilities:', error);
+            return [];
+        }
+    }
+
+    // Add this function to load insurance details
+    async function loadInsuranceDetails() {
+        try {
+            const response = await fetch('http://localhost:8000/facilities/insurances');
+            const insurances = await response.json();
+            
+            const tableBody = document.getElementById('insurance-table-body');
+            tableBody.innerHTML = ''; // Clear existing content
+            
+            insurances.forEach(insurance => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${insurance.name}</td>
+                    <td>${insurance.notes || 'Standard Coverage'}</td>
+                    <td>${insurance.details || 'Contact provider for details'}</td>
+                    <td>${insurance.allowed_facilities || 'All accredited facilities'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading insurance details:', error);
+        }
+    }
+
+    // Call this function when the page loads
+    loadInsuranceDetails();
 });

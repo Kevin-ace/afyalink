@@ -10,6 +10,12 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
     font-size: 1.1rem; /* Increase the font size of the navbar items */
+    background-color: rgba(255, 255, 255, 0.7) !important; /* 70% opaque, 30% transparent */
+    backdrop-filter: blur(8px); /* Add slight blur effect for better readability */
+    height: 60px;
+    min-height: 60px;
+    padding: 0 8px;
+    z-index: 1000;
 }
 
 .navbar-brand {
@@ -59,6 +65,7 @@
     margin-top: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background-color: rgba(255, 255, 255, 1);
 }
 
 .navbar-nav .dropdown-item {
@@ -266,4 +273,10 @@ body {
         width: 100%;
         margin: 5px 0;
     }
+}
+
+/* Ensure text remains fully opaque */
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: rgba(0, 0, 0, 0.9);
 }
