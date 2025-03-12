@@ -459,7 +459,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     userMarker = L.marker(userLocation, {
                         icon: L.divIcon({
                             className: 'custom-marker user-location',
-                            html: '<i class="fas fa-user-circle"></i>',
+                            html: '<i class="fas fa-crosshairs"></i>',
                             iconSize: [30, 30],
                             iconAnchor: [15, 15]
                         }),
@@ -470,7 +470,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     const userPopup = L.popup({
                         className: 'user-location-popup',
                         closeButton: false,
-                        offset: [0, -10]
+                        offset: [0, -10],
+                        autoPan: true
                     }).setContent('<h5>You are here</h5>');
 
                     userMarker.bindPopup(userPopup).openPopup();
