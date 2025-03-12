@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
+import os
+import pandas as pd
 
 from app.database import get_db
 from app.models import Insurance, Facility
@@ -10,7 +12,30 @@ router = APIRouter(prefix="/insurances", tags=["Insurances"])
 
 @router.get("/", response_model=List[InsuranceResponse])
 def list_insurances(db: Session = Depends(get_db)):
-    return db.query(Insurance).all()
+    insurances = db.query(Insurance).all()
+    
+    # If no insurances found in database, try to load from CSV
+    if not insurances:
+        try:
+            csv_path = os.path.join(os.path.dirname(__file__), '..', 'insuarance.csv')
+            if os.path.exists(csv_path):
+                df = pd.read_csv(csv_path)
+                
+                # Convert CSV data to InsuranceResponse objects
+                insurances = []
+                for i, row in df.iterrows():
+                    insurance = Insurance(
+                        id=i+1,
+                        name=row['name of insurance'],
+                        details=row['details'],
+                        notes=row['notes'],
+                        allowed_facilities=row['allowed health facilities']
+                    )
+                    insurances.append(insurance)
+        except Exception as e:
+            print(f"Error loading from CSV: {e}")
+    
+    return insurances
 
 @router.get("/{insurance_id}", response_model=InsuranceResponse)
 def get_insurance(insurance_id: int, db: Session = Depends(get_db)):

@@ -22,7 +22,7 @@
     <script type="module" src="../js/dashboard.js"></script>
 </head>
 
-<body>
+<body class="dashboard-body">
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container-fluid px-4">
             <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
@@ -87,6 +87,58 @@
         </div>
     </div>
 
+    <!-- Add this modal markup after the notifications modal -->
+    <div class="modal fade" id="facilityDetailsModal" tabindex="-1" aria-labelledby="facilityDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="facilityDetailsModalLabel">Facility Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="facility-details">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-group">
+                                    <h6>Basic Information</h6>
+                                    <p><strong>Name:</strong> <span id="modal-facility-name"></span></p>
+                                    <p><strong>Type:</strong> <span id="modal-facility-type"></span></p>
+                                    <p><strong>Agency:</strong> <span id="modal-facility-agency"></span></p>
+                                    <p><strong>HMIS:</strong> <span id="modal-facility-hmis"></span></p>
+                                </div>
+                                
+                                <div class="info-group mt-4">
+                                    <h6>Location Details</h6>
+                                    <p><strong>Province:</strong> <span id="modal-facility-province"></span></p>
+                                    <p><strong>District:</strong> <span id="modal-facility-district"></span></p>
+                                    <p><strong>Division:</strong> <span id="modal-facility-division"></span></p>
+                                    <p><strong>Location:</strong> <span id="modal-facility-location"></span></p>
+                                    <p><strong>Sub-location:</strong> <span id="modal-facility-sublocation"></span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="info-group">
+                                    <h6>Accepted Insurance</h6>
+                                    <div id="modal-facility-insurance" class="insurance-list"></div>
+                                </div>
+                                
+                                <div class="info-group mt-4">
+                                    <h6>Services</h6>
+                                    <div id="modal-facility-services" class="services-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="getDirections()">Get Directions</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main content -->
     <div class="dashboard-container">
         <!-- Left section for map and insurance details -->
@@ -116,14 +168,14 @@
 
             <!-- Insurance Details Section -->
             <div class="insurance-details-container">
-                <h3>Insurance Coverage Details</h3>
+                <h3>Insurances</h3>
                 <table class="insurance-table">
                     <thead>
                         <tr>
                             <th>Insurance Provider</th>
-                            <th>Coverage Type</th>
-                            <th>Details</th>
-                            <th>Facility Types</th>
+                            <th>Type</th>
+                            <th>Coverage Description</th>
+                            <th>Supported Facilities</th>
                         </tr>
                     </thead>
                     <tbody id="insurance-table-body">
@@ -252,16 +304,12 @@
     <!-- Facility Details Template -->
     <template id="facility-popup-template">
         <div class="facility-popup">
-            <h5 class="facility-name"></h5>
+            <h4 class="facility-name"></h4>
+            <p class="facility-address"></p>
             
             <div class="info-section">
-                <div class="info-label">Type</div>
+                <div class="info-label">Level</div>
                 <div class="facility-type"></div>
-            </div>
-            
-            <div class="info-section">
-                <div class="info-label">Location</div>
-                <div class="facility-location"></div>
             </div>
             
             <div class="info-section">
@@ -270,12 +318,34 @@
                     <!-- Insurance badges will be inserted here -->
                 </div>
             </div>
-            
-            <button class="btn btn-primary btn-sm mt-3 w-100" onclick="showFacilityDetails(this.dataset.facilityId)">
-                More Details
-            </button>
+
+            <div class="info-section">
+                <div class="info-label">Services</div>
+                <div class="services-list">
+                    <!-- Service badges will be inserted here -->
+                </div>
+            </div>
         </div>
     </template>
+
+    <!-- Add this script to ensure map is properly initialized -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Force map to resize after page load
+            setTimeout(function() {
+                if (window.map) {
+                    window.map.invalidateSize();
+                }
+            }, 500);
+            
+            // Also resize on window resize
+            window.addEventListener('resize', function() {
+                if (window.map) {
+                    window.map.invalidateSize();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -30,49 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 100);
 
     // Get user's location with error handling
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const userLocation = [position.coords.latitude, position.coords.longitude];
-                Logger.log(Logger.SUCCESS, 'Got user location', userLocation);
-                
-                // Clear previous user marker if exists
-                if (userMarker) {
-                    map.removeLayer(userMarker);
-                }
-
-                // Add user marker with custom icon
-                userMarker = L.marker(userLocation, {
-                    icon: L.divIcon({
-                        className: 'custom-marker user-location',
-                        html: '<i class="fas fa-user-circle"></i>',
-                        iconSize: [30, 30],
-                        iconAnchor: [15, 15]
-                    }),
-                    zIndexOffset: 1000
-                }).addTo(map);
-
-                // Set view to user location and show popup
-                map.setView(userLocation, defaultZoom);
-                userMarker.bindPopup('Your Location').openPopup();
-
-                // Fetch nearby facilities
-                fetchNearbyFacilities(userLocation[0], userLocation[1], searchRadius);
-            },
-            (error) => {
-                Logger.log(Logger.WARNING, 'Geolocation error, using default location', error);
-                fetchNearbyFacilities(defaultCenter[0], defaultCenter[1], searchRadius);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-            }
-        );
-    } else {
-        Logger.log(Logger.WARNING, 'Geolocation not available');
-        fetchNearbyFacilities(defaultCenter[0], defaultCenter[1], searchRadius);
-    }
+    handleUserLocation();
 
     async function fetchNearbyFacilities(lat, lng, radius) {
         try {
@@ -86,94 +44,137 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 const facilities = await response.json();
                 Logger.log(Logger.SUCCESS, 'Facilities fetched successfully', { count: facilities.length });
-                addFacilitiesToMap(facilities);
+                
+                if (facilities && facilities.length > 0) {
+                    addFacilitiesToMap(facilities);
+                } else {
+                    Logger.log(Logger.WARNING, 'No facilities found in API response, falling back to CSV');
+                    loadFacilitiesFromCSV(lat, lng, radius);
+                }
             } else {
                 Logger.log(Logger.WARNING, 'API failed, falling back to CSV');
-                const csvResponse = await fetch('http://localhost:8000/health-facilities-csv');
-                const csvText = await csvResponse.text();
-                
-                Papa.parse(csvText, {
-                    header: true,
-                    complete: function(results) {
-                        const nearbyFacilities = results.data.filter(facility => {
-                            if (!facility.Latitude || !facility.Longitude) return false;
-                            
-                            const distance = calculateDistance(
-                                lat, lng, 
-                                parseFloat(facility.Latitude), 
-                                parseFloat(facility.Longitude)
-                            );
-                            return distance <= radius;
-                        });
-                        
-                        Logger.log(Logger.SUCCESS, 'Facilities loaded from CSV', { count: nearbyFacilities.length });
-                        addFacilitiesToMap(nearbyFacilities);
-                    },
-                    error: function(error) {
-                        Logger.log(Logger.ERROR, 'CSV parsing failed', error);
-                    }
-                });
+                loadFacilitiesFromCSV(lat, lng, radius);
             }
         } catch (error) {
             Logger.log(Logger.ERROR, 'Failed to fetch facilities', error);
+            loadFacilitiesFromCSV(lat, lng, radius);
+        }
+    }
+
+    async function loadFacilitiesFromCSV(lat, lng, radius) {
+        try {
+            const csvResponse = await fetch('http://localhost:8000/health-facilities-csv');
+            if (!csvResponse.ok) {
+                throw new Error('Failed to fetch CSV data');
+            }
+            
+            const csvText = await csvResponse.text();
+            
+            Papa.parse(csvText, {
+                header: true,
+                complete: function(results) {
+                    if (!results.data || results.data.length === 0) {
+                        Logger.log(Logger.ERROR, 'No data in CSV file');
+                        return;
+                    }
+                    
+                    const nearbyFacilities = results.data.filter(facility => {
+                        if (!facility.Latitude || !facility.Longitude) return false;
+                        
+                        // Skip rows with invalid coordinates
+                        const facilityLat = parseFloat(facility.Latitude);
+                        const facilityLng = parseFloat(facility.Longitude);
+                        
+                        if (isNaN(facilityLat) || isNaN(facilityLng)) return false;
+                        
+                        const distance = calculateDistance(
+                            lat, lng, 
+                            facilityLat, 
+                            facilityLng
+                        );
+                        return distance <= radius;
+                    });
+                    
+                    Logger.log(Logger.SUCCESS, 'Facilities loaded from CSV', { count: nearbyFacilities.length });
+                    addFacilitiesToMap(nearbyFacilities);
+                },
+                error: function(error) {
+                    Logger.log(Logger.ERROR, 'CSV parsing failed', error);
+                }
+            });
+        } catch (error) {
+            Logger.log(Logger.ERROR, 'Failed to load facilities from CSV', error);
         }
     }
 
     function createFacilityPopupContent(facility) {
+        const template = document.getElementById('facility-popup-template');
+        const content = template.content.cloneNode(true);
+        
         // Normalize facility data to handle both API and CSV formats
-        const facilityData = {
-            name: facility.facility_name || facility.name || facility['Facility Name'] || 'N/A',
-            type: facility.facility_type || facility.type || facility['Facility Type'] || 'N/A',
-            location: facility.location || facility['Location'] || facility.district || facility['District'] || 'N/A',
-            insurances: facility.insurances || []
-        };
-
-        // Create insurance badges if available
-        let insuranceContent = '<em>No insurance information available</em>';
-        if (Array.isArray(facilityData.insurances) && facilityData.insurances.length > 0) {
-            insuranceContent = facilityData.insurances
-                .map(ins => `
-                    <div class="insurance-badge" 
-                         title="${ins.details || 'No details available'}">
-                        ${ins.name}
-                    </div>
-                `).join('');
+        const name = facility.facility_name || facility['Facility Name'] || 'N/A';
+        const type = facility.facility_type || facility['Facility Type'] || 'Level Not specified';
+        const location = facility.location || facility['Location'] || '';
+        const district = facility.district || facility['District'] || '';
+        
+        // Fill in facility information
+        content.querySelector('.facility-name').textContent = name;
+        content.querySelector('.facility-address').textContent = 
+            `${location}${district ? `, ${district}` : ''}`;
+        
+        // Format facility type to show level
+        const levelMatch = type.match(/level\s*(\d+)/i);
+        const levelText = levelMatch ? 
+            `Level ${levelMatch[1]}` : 
+            type.toLowerCase().includes('hospital') ? 'Hospital' : type;
+        
+        content.querySelector('.facility-type').textContent = levelText;
+        
+        // Add insurance badges
+        const insuranceList = content.querySelector('.insurance-list');
+        if (facility.insurances && facility.insurances.length > 0) {
+            facility.insurances.forEach(insurance => {
+                const badge = document.createElement('div');
+                badge.className = 'insurance-badge';
+                // Remove "Insurance" from the display name
+                badge.textContent = insurance.name.replace(/\s*Insurance\s*/i, '');
+                badge.title = insurance.details || 'No details available';
+                insuranceList.appendChild(badge);
+            });
+        } else {
+            // Default insurances if none provided
+            ['NHIF', 'Private'].forEach(ins => {
+                const badge = document.createElement('div');
+                badge.className = 'insurance-badge';
+                badge.textContent = ins;
+                insuranceList.appendChild(badge);
+            });
         }
-
-        // Build popup content
-        const content = `
-            <div class="facility-popup">
-                <div style="margin-bottom: 15px;">
-                    <h5 style="margin: 0 0 10px 0; color: #2c7da0; font-weight: 600;">
-                        ${facilityData.name}
-                    </h5>
-                </div>
-                
-                <div style="margin-bottom: 10px;">
-                    <div style="font-weight: 500;">Type:</div>
-                    <div>${facilityData.type}</div>
-                </div>
-                
-                <div style="margin-bottom: 10px;">
-                    <div style="font-weight: 500;">Location:</div>
-                    <div>${facilityData.location}</div>
-                </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <div style="font-weight: 500; margin-bottom: 5px;">Accepted Insurance:</div>
-                    <div class="insurance-list" style="display: flex; flex-wrap: wrap; gap: 5px;">
-                        ${insuranceContent}
-                    </div>
-                </div>
-                
-                <button class="btn btn-primary btn-sm" 
-                        style="width: 100%; margin-top: 10px;"
-                        onclick="showFacilityDetails(${facility.id || facility['Facility Number']})">
-                    More Details
-                </button>
-            </div>
-        `;
-
+        
+        // Add services list
+        const servicesList = content.querySelector('.services-list');
+        if (facility.services && facility.services.length > 0) {
+            facility.services.forEach(service => {
+                const badge = document.createElement('div');
+                badge.className = 'service-badge';
+                badge.textContent = service.name;
+                badge.title = service.description || '';
+                servicesList.appendChild(badge);
+            });
+        } else {
+            // Default services based on facility type
+            const defaultServices = type.toLowerCase().includes('hospital') ? 
+                ['Emergency', 'Outpatient', 'Inpatient'] : 
+                ['Outpatient', 'Pharmacy'];
+            
+            defaultServices.forEach(service => {
+                const badge = document.createElement('div');
+                badge.className = 'service-badge';
+                badge.textContent = service;
+                servicesList.appendChild(badge);
+            });
+        }
+        
         return content;
     }
 
@@ -228,10 +229,50 @@ document.addEventListener("DOMContentLoaded", function () {
         Logger.log(Logger.SUCCESS, 'Facilities added to map');
     }
 
-    function showFacilityDetails(facilityId) {
-        // Implement facility details view
-        console.log(`Show details for facility ${facilityId}`);
-        // You can implement a modal or sidebar view here
+    // Add this function to show facility details
+    async function showFacilityDetails(facilityId) {
+        try {
+            const response = await fetch(`http://localhost:8000/facilities/facility/${facilityId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch facility details');
+            }
+            
+            const facility = await response.json();
+            
+            // Update modal content
+            document.getElementById('modal-facility-name').textContent = facility.facility_name;
+            document.getElementById('modal-facility-type').textContent = facility.facility_type || 'N/A';
+            document.getElementById('modal-facility-agency').textContent = facility.agency || 'N/A';
+            document.getElementById('modal-facility-hmis').textContent = facility.hmis || 'N/A';
+            document.getElementById('modal-facility-province').textContent = facility.province || 'N/A';
+            document.getElementById('modal-facility-district').textContent = facility.district || 'N/A';
+            document.getElementById('modal-facility-division').textContent = facility.division || 'N/A';
+            document.getElementById('modal-facility-location').textContent = facility.location || 'N/A';
+            document.getElementById('modal-facility-sublocation').textContent = facility.sub_location || 'N/A';
+            
+            // Update insurance list
+            const insuranceList = document.getElementById('modal-facility-insurance');
+            insuranceList.innerHTML = '';
+            if (facility.insurances && facility.insurances.length > 0) {
+                facility.insurances.forEach(insurance => {
+                    const badge = document.createElement('div');
+                    badge.className = 'insurance-badge';
+                    badge.textContent = insurance.name;
+                    badge.title = insurance.details;
+                    insuranceList.appendChild(badge);
+                });
+            } else {
+                insuranceList.innerHTML = '<em>No insurance information available</em>';
+            }
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('facilityDetailsModal'));
+            modal.show();
+            
+        } catch (error) {
+            console.error('Error fetching facility details:', error);
+            alert('Failed to load facility details');
+        }
     }
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -297,30 +338,170 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Add this function to load insurance details
+    // Update the loadInsuranceDetails function with CSV fallback
     async function loadInsuranceDetails() {
         try {
+            // Try to fetch from API first
             const response = await fetch('http://localhost:8000/facilities/insurances');
+            
+            if (!response.ok) {
+                throw new Error(`API returned status: ${response.status}`);
+            }
+            
             const insurances = await response.json();
+            populateInsuranceTable(insurances);
             
-            const tableBody = document.getElementById('insurance-table-body');
-            tableBody.innerHTML = ''; // Clear existing content
-            
-            insurances.forEach(insurance => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${insurance.name}</td>
-                    <td>${insurance.notes || 'Standard Coverage'}</td>
-                    <td>${insurance.details || 'Contact provider for details'}</td>
-                    <td>${insurance.allowed_facilities || 'All accredited facilities'}</td>
-                `;
-                tableBody.appendChild(row);
-            });
         } catch (error) {
-            console.error('Error loading insurance details:', error);
+            console.error('Error loading insurance data from API:', error);
+            console.log('Falling back to CSV data...');
+            
+            // Fallback to CSV file
+            try {
+                const csvResponse = await fetch('../data/insuarance.csv');
+                if (!csvResponse.ok) {
+                    throw new Error(`CSV fetch failed with status: ${csvResponse.status}`);
+                }
+                
+                const csvText = await csvResponse.text();
+                
+                // Parse CSV using PapaParse
+                Papa.parse(csvText, {
+                    header: true,
+                    complete: function(results) {
+                        // Transform CSV data to match API format
+                        const insurances = results.data.map((item, index) => ({
+                            id: index + 1,
+                            name: item['name of insurance'] || 'Unknown',
+                            details: item['details'] || 'No details available',
+                            notes: item['notes'] || '',
+                            allowed_facilities: item['allowed health facilities'] || 'Contact provider'
+                        }));
+                        
+                        populateInsuranceTable(insurances);
+                    },
+                    error: function(error) {
+                        console.error('CSV parsing failed:', error);
+                        showTableError();
+                    }
+                });
+                
+            } catch (csvError) {
+                console.error('Error loading CSV fallback:', csvError);
+                showTableError();
+            }
         }
+    }
+
+    // Update the insurance table population
+    function populateInsuranceTable(insurances) {
+        const tableBody = document.getElementById('insurance-table-body');
+        tableBody.innerHTML = '';
+        
+        if (!insurances || insurances.length === 0) {
+            showTableError('No insurance data available');
+            return;
+        }
+        
+        insurances.forEach(insurance => {
+            const type = insurance.notes?.match(/Insurance type: (.+)/)?.[1] || 'Standard';
+            const typeClass = type.toLowerCase() === 'public' ? 'public' : 'private';
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <div class="insurance-name">${insurance.name}</div>
+                    <div class="insurance-type ${typeClass}">${type}</div>
+                </td>
+                <td>${insurance.details || 'Contact provider for details'}</td>
+                <td>${insurance.allowed_facilities || 'All accredited facilities'}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Helper function to show error in the table
+    function showTableError(message = 'Error loading insurance data. Please try again later.') {
+        const tableBody = document.getElementById('insurance-table-body');
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center text-muted">
+                    <i>${message}</i>
+                </td>
+            </tr>
+        `;
+    }
+
+    // Add function to get directions
+    function getDirections() {
+        const facilityName = document.getElementById('modal-facility-name').textContent;
+        const location = document.getElementById('modal-facility-location').textContent;
+        const searchQuery = encodeURIComponent(`${facilityName}, ${location}, Kenya`);
+        window.open(`https://www.google.com/maps/search/?api=1&query=${searchQuery}`, '_blank');
     }
 
     // Call this function when the page loads
     loadInsuranceDetails();
+
+    // Update the user location handling
+    function handleUserLocation() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLocation = [position.coords.latitude, position.coords.longitude];
+                    Logger.log(Logger.SUCCESS, 'Got user location', userLocation);
+                    
+                    // Clear previous user marker if exists
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                    }
+
+                    // Add user marker with custom icon
+                    userMarker = L.marker(userLocation, {
+                        icon: L.divIcon({
+                            className: 'custom-marker user-location',
+                            html: '<i class="fas fa-user-circle"></i>',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        }),
+                        zIndexOffset: 1000
+                    }).addTo(map);
+
+                    // Create custom popup for user location
+                    const userPopup = L.popup({
+                        className: 'user-location-popup',
+                        closeButton: false,
+                        offset: [0, -10]
+                    }).setContent('<h5>You are here</h5>');
+
+                    userMarker.bindPopup(userPopup).openPopup();
+
+                    // Center map on user location and fetch nearby facilities
+                    map.setView(userLocation, defaultZoom);
+                    fetchNearbyFacilities(userLocation[0], userLocation[1], searchRadius);
+                },
+                (error) => {
+                    Logger.log(Logger.WARNING, 'Geolocation error:', error);
+                    alert('Unable to get your location. Using default location.');
+                    useDefaultLocation();
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            Logger.log(Logger.WARNING, 'Geolocation not available');
+            useDefaultLocation();
+        }
+    }
+
+    function useDefaultLocation() {
+        const defaultLocation = [-1.286389, 36.817223]; // Nairobi coordinates
+        map.setView(defaultLocation, defaultZoom);
+        fetchNearbyFacilities(defaultLocation[0], defaultLocation[1], searchRadius);
+    }
+
+    // Call handleUserLocation when the map is ready
+    handleUserLocation();
 });

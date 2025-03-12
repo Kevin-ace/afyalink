@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from app.routes import auth_routes, facilities_router, service_routes, insurance_routes, recommendation_routes, facilities
+from app.routes.insurance_routes import router as insurance_router
 from app.database import engine
 from app.models import Base
 
@@ -33,6 +34,7 @@ app.add_middleware(
         "http://localhost:63342",  # Your frontend origin
         "http://127.0.0.1:63342",
         "http://localhost:3000",
+        "*",  # Allow all origins for testing
     ],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
@@ -47,6 +49,7 @@ app.include_router(service_routes, prefix="/services", tags=["Services"])
 app.include_router(insurance_routes, prefix="/insurances", tags=["Insurances"])
 app.include_router(recommendation_routes, prefix="/recommendations", tags=["Recommendations"])
 app.include_router(facilities.router, prefix="/facilities", tags=["facilities"])
+app.include_router(insurance_router, prefix="/facilities", tags=["Insurances"])
 
 @app.get("/")
 async def root():
@@ -66,4 +69,20 @@ async def get_health_facilities_csv():
         path=csv_path, 
         media_type='text/csv', 
         filename='Health_facilities.csv'
+    )
+
+@app.get("/insuarance-csv")
+async def get_insurance_csv():
+    """
+    Endpoint to serve the insuarance.csv file
+    """
+    csv_path = os.path.join(os.path.dirname(__file__), 'insuarance.csv')
+    
+    if not os.path.exists(csv_path):
+        raise HTTPException(status_code=404, detail="CSV file not found")
+    
+    return FileResponse(
+        path=csv_path, 
+        media_type='text/csv', 
+        filename='insuarance.csv'
     )
