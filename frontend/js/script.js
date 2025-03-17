@@ -327,4 +327,10 @@ class Utils {
     }
 }
 
+// Ensure this file is set up as a module
+// Example content:
+export function exampleFunction() {
+    console.log('This is an example function.');
+}
+
 export { Utils };

@@ -1,23 +1,28 @@
 from pydantic import BaseModel, Field, EmailStr, validator
-from typing import List, Optional
+from typing import List, Optional, ForwardRef
 from datetime import datetime
 import re
 
+# Forward reference to break circular dependency
+FacilityBase = ForwardRef('FacilityBase')
+
 # Insurance Schemas
 class InsuranceBase(BaseModel):
+    id: int
     name: str
     details: str
     notes: Optional[str] = None
-    allowed_facilities: str
+    allowed_facilities: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
 
 class InsuranceCreate(InsuranceBase):
     pass
 
 class InsuranceResponse(InsuranceBase):
-    id: int
-    
-    class Config:
-        from_attributes = True
+    # Use string literal for forward reference
+    facilities: Optional[List['FacilityBase']] = None
 
 # User Schemas
 class UserBase(BaseModel):
@@ -51,24 +56,13 @@ class UserResponse(BaseModel):
 
 # Facility Schemas
 class FacilityBase(BaseModel):
-    facility_number: int
+    id: int
     facility_name: str
-    hmis: Optional[int] = None
-    province: Optional[str] = None
-    district: Optional[str] = None
-    division: Optional[str] = None
-    location: Optional[str] = None
-    sub_location: Optional[str] = None
-    spatial_re: Optional[str] = None
-    facility_type: Optional[str] = None
-    agency: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
-    global_id: Optional[str] = None
-    x: Optional[float] = None
-    y: Optional[float] = None
-    insurances: List[InsuranceResponse] = []
-
+    facility_type: str
+    latitude: float
+    longitude: float
+    # Other fields as needed...
+    
     class Config:
         from_attributes = True
 
@@ -76,10 +70,12 @@ class FacilityCreate(FacilityBase):
     pass
 
 class FacilityResponse(FacilityBase):
-    id: int
+    # Use string literal for forward reference
+    insurances: Optional[List['InsuranceBase']] = None
 
-    class Config:
-        from_attributes = True  # Updated from orm_mode to from_attributes
+# Now update the forward references
+InsuranceResponse.update_forward_refs()
+FacilityResponse.update_forward_refs()
 
 # Service Schemas
 class ServiceBase(BaseModel):

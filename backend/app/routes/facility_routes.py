@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from geoalchemy2 import func
 
 from app.database import get_db
 from app.models import Facility, Service, Insurance
-from app.schemas import FacilityCreate, FacilityResponse
+from app.schemas import FacilityCreate, FacilityResponse, InsuranceResponse
 
 router = APIRouter()
 
@@ -95,3 +95,18 @@ async def create_facility(
     db.refresh(new_facility)
     
     return new_facility
+
+@router.get("/{facility_id}/insurances", response_model=List[InsuranceResponse])
+async def get_facility_insurances(
+    facility_id: int = Path(..., description="The ID of the facility to retrieve insurances for"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all insurance providers accepted by a specific facility
+    """
+    facility = db.query(Facility).filter(Facility.id == facility_id).first()
+    
+    if not facility:
+        raise HTTPException(status_code=404, detail="Facility not found")
+    
+    return facility.insurances

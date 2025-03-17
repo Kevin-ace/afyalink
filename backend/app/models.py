@@ -11,11 +11,20 @@ facility_service_association = Table(
     Column('service_id', Integer, ForeignKey('services.id'))
 )
 
+# Keep only one definition for facility_insurance
 facility_insurance_association = Table(
     'facility_insurance', Base.metadata,
-    Column('facility_id', Integer, ForeignKey('facilities.id')),
-    Column('insurance_id', Integer, ForeignKey('insurances.id'))
+    Column('facility_id', Integer, ForeignKey('facilities.id'), primary_key=True),
+    Column('insurance_id', Integer, ForeignKey('insurances.id'), primary_key=True)
 )
+
+# Delete or comment out this duplicate table definition
+# facility_insurance = Table(
+#     'facility_insurance',
+#     Base.metadata,
+#     Column('facility_id', Integer, ForeignKey('facilities.id'), primary_key=True),
+#     Column('insurance_id', Integer, ForeignKey('insurances.id'), primary_key=True)
+# )
 
 class User(Base):
     __tablename__ = 'users'

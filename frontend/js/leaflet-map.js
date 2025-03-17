@@ -38,12 +38,18 @@ document.addEventListener("DOMContentLoaded", function () {
             facilitiesLayer.clearLayers();
 
             const response = await fetch(
-                `http://localhost:8000/facilities/nearby?latitude=${lat}&longitude=${lng}&radius=${radius}`
+                `http://localhost:8000/facilities/nearby?latitude=${lat}&longitude=${lng}&radius=${radius}&include_details=true&include_insurances=true`
             );
 
             if (response.ok) {
                 const facilities = await response.json();
                 Logger.log(Logger.SUCCESS, 'Facilities fetched successfully', { count: facilities.length });
+                
+                if (facilities.length > 0) {
+                    Logger.log(Logger.INFO, 'Sample facility data', { 
+                        insurance_data: facilities[0].insurances || 'No insurance data in response' 
+                    });
+                }
                 
                 if (facilities && facilities.length > 0) {
                     addFacilitiesToMap(facilities);
@@ -137,18 +143,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 const badge = document.createElement('div');
                 badge.className = 'insurance-badge';
                 // Remove "Insurance" from the display name
-                badge.textContent = insurance.name.replace(/\s*Insurance\s*/i, '');
+                const displayName = typeof insurance === 'string' ? 
+                    insurance : 
+                    (insurance.name || '').replace(/\s*Insurance\s*/i, '');
+                    
+                badge.textContent = displayName;
                 badge.title = insurance.details || 'No details available';
+                
+                // Add tooltip event handlers
+                badge.addEventListener('mouseenter', (e) => showTooltip(e, insurance.details || 'No details available'));
+                badge.addEventListener('mouseleave', hideTooltip);
+                
                 insuranceList.appendChild(badge);
             });
         } else {
-            // Default insurances if none provided
-            ['NHIF', 'Private'].forEach(ins => {
-                const badge = document.createElement('div');
-                badge.className = 'insurance-badge';
-                badge.textContent = ins;
-                insuranceList.appendChild(badge);
-            });
+            // Check for non-standard insurance format in the data
+            const insuranceData = extractInsuranceData(facility);
+            if (insuranceData.length > 0) {
+                insuranceData.forEach(ins => {
+                    const badge = document.createElement('div');
+                    badge.className = 'insurance-badge';
+                    badge.textContent = ins;
+                    insuranceList.appendChild(badge);
+                });
+            } else {
+                // Only use these defaults if we couldn't find ANY insurance data
+                ['NHIF', 'Private'].forEach(ins => {
+                    const badge = document.createElement('div');
+                    badge.className = 'insurance-badge';
+                    badge.textContent = ins;
+                    badge.title = 'Default value - actual coverage may vary';
+                    insuranceList.appendChild(badge);
+                });
+            }
         }
         
         // Add services list
@@ -178,19 +205,62 @@ document.addEventListener("DOMContentLoaded", function () {
         return content;
     }
 
+    // Helper function to extract insurance information from various data formats
+    function extractInsuranceData(facility) {
+        const insurances = [];
+        
+        // Check for insurance info in various formats
+        if (facility.insurance_providers) {
+            return Array.isArray(facility.insurance_providers) ? 
+                facility.insurance_providers : 
+                [facility.insurance_providers];
+        }
+        
+        // Try to parse from other possible fields
+        const possibleFields = ['insurance', 'accepted_insurance', 'Insurance'];
+        for (const field of possibleFields) {
+            if (facility[field]) {
+                if (typeof facility[field] === 'string') {
+                    // Try to split comma-separated values
+                    return facility[field].split(/,\s*/).filter(i => i.trim());
+                } else if (Array.isArray(facility[field])) {
+                    return facility[field];
+                }
+            }
+        }
+        
+        return insurances;
+    }
+
     // Add these helper functions for tooltips
     function showTooltip(event, content) {
+        hideTooltip(); // Remove any existing tooltips first
+        
         const tooltip = document.createElement('div');
         tooltip.className = 'insurance-tooltip';
-        tooltip.textContent = content;
+        tooltip.textContent = content || 'No details available';
         tooltip.style.left = `${event.pageX + 10}px`;
         tooltip.style.top = `${event.pageY + 10}px`;
         document.body.appendChild(tooltip);
+        
+        // Make sure tooltip is visible
+        tooltip.style.display = 'block';
+        
+        // Hide tooltip after 5 seconds to prevent orphaned tooltips
+        setTimeout(() => {
+            if (tooltip && tooltip.parentNode) {
+                tooltip.parentNode.removeChild(tooltip);
+            }
+        }, 5000);
     }
 
     function hideTooltip() {
         const tooltips = document.querySelectorAll('.insurance-tooltip');
-        tooltips.forEach(tooltip => tooltip.remove());
+        tooltips.forEach(tooltip => {
+            if (tooltip.parentNode) {
+                tooltip.parentNode.removeChild(tooltip);
+            }
+        });
     }
 
     function addFacilitiesToMap(facilities) {
@@ -250,15 +320,46 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('modal-facility-location').textContent = facility.location || 'N/A';
             document.getElementById('modal-facility-sublocation').textContent = facility.sub_location || 'N/A';
             
-            // Update insurance list
+            // Update insurance list with improved handling
             const insuranceList = document.getElementById('modal-facility-insurance');
             insuranceList.innerHTML = '';
+            
+            // Try to get insurance data from multiple possible sources
+            let insurances = [];
             if (facility.insurances && facility.insurances.length > 0) {
-                facility.insurances.forEach(insurance => {
+                insurances = facility.insurances;
+            } else {
+                // Try alternate sources using our helper function
+                const extractedInsurances = extractInsuranceData(facility);
+                if (extractedInsurances.length > 0) {
+                    insurances = extractedInsurances.map(name => ({ name }));
+                } else {
+                    // If no insurance data, try to fetch it specifically
+                    try {
+                        const insuranceResponse = await fetch(`http://localhost:8000/facilities/${facility.id}/insurances`);
+                        if (insuranceResponse.ok) {
+                            insurances = await insuranceResponse.json();
+                        }
+                    } catch (insError) {
+                        console.warn('Could not fetch facility insurances:', insError);
+                    }
+                }
+            }
+            
+            if (insurances.length > 0) {
+                insurances.forEach(insurance => {
                     const badge = document.createElement('div');
                     badge.className = 'insurance-badge';
-                    badge.textContent = insurance.name;
-                    badge.title = insurance.details;
+                    const displayName = typeof insurance === 'string' ? 
+                        insurance : 
+                        (insurance.name || '').replace(/\s*Insurance\s*/i, '');
+                    badge.textContent = displayName;
+                    badge.title = insurance.details || 'No details available';
+                    
+                    // Add tooltip events
+                    badge.addEventListener('mouseenter', (e) => showTooltip(e, insurance.details || 'No details available'));
+                    badge.addEventListener('mouseleave', hideTooltip);
+                    
                     insuranceList.appendChild(badge);
                 });
             } else {
@@ -326,7 +427,9 @@ document.addEventListener("DOMContentLoaded", function () {
     async function fetchFacilities(searchTerm = '', insuranceId = '') {
         const params = new URLSearchParams({
             name: searchTerm,
-            insurance_id: insuranceId
+            insurance_id: insuranceId,
+            include_details: 'true',
+            include_insurances: 'true'
         });
 
         try {

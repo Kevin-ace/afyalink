@@ -48,7 +48,7 @@ app.include_router(facilities_router, prefix="/facilities", tags=["Facilities"])
 app.include_router(service_routes, prefix="/services", tags=["Services"])
 app.include_router(insurance_routes, prefix="/insurances", tags=["Insurances"])
 app.include_router(recommendation_routes, prefix="/recommendations", tags=["Recommendations"])
-app.include_router(facilities.router, prefix="/facilities", tags=["facilities"])
+app.include_router(facilities.router, prefix="/facilities")
 app.include_router(insurance_router, prefix="/facilities", tags=["Insurances"])
 
 @app.get("/")

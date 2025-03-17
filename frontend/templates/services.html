@@ -172,6 +172,11 @@
                         <p>Counseling and psychological services</p>
                         <a href="#" class="btn btn-outline-primary">Learn More</a>
                     </div>
+                    <div class="support-card">
+                        <h3>Insurance Subscriptions</h3>
+                        <p>Subscribe to health insurance plans instantly</p>
+                        <button id="subscribe-button" class="btn btn-outline-primary">Subscribe Now</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -182,6 +187,28 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../script.js"></script>
+    <script src="../js/script.js" type="module"></script> <!-- Set script.js as a module -->
+    <script>
+        document.getElementById('subscribe-button').addEventListener('click', function() {
+            fetch('http://localhost:8000/subscribe', { // Ensure this matches the backend URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Add any necessary data here
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert('Subscription successful!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Subscription failed!');
+            });
+        });
+    </script>
 </body>
 </html>

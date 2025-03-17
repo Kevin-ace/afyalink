@@ -1,7 +1,7 @@
 # Core Web Framework
 fastapi
 uvicorn
-
+pandas
 # Database
 sqlalchemy
 psycopg2-binary
