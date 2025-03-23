@@ -62,79 +62,123 @@
 
     <main class="container mt-5 pt-4">
       <div class="row">
+        <!-- Profile Card -->
         <div class="col-md-4 mb-4">
-          <div class="card profile-card">
+          <div class="card profile-card h-100">
             <div class="card-body text-center">
-              <div class="profile-image mb-3">
+              <div class="profile-image mb-4">
                 <img id="profileAvatar" src="../assets/icons/medical-symbol.png" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
                 <button class="btn btn-sm btn-outline-primary mt-2" onclick="document.getElementById('avatarInput').click()">
                   <i class="fas fa-camera me-1"></i>Change Photo
                 </button>
                 <input type="file" id="avatarInput" hidden accept="image/*">
               </div>
-              <h3 class="card-title" id="profileName">Loading...</h3>
-              <p class="card-text text-muted" id="profileEmail">loading@example.com</p>
-              <p class="card-text" id="profilePhone">Loading...</p>
-              <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                <i class="fas fa-edit me-1"></i>Edit Profile
-              </button>
+              <h3 class="card-title" id="fullName">Loading...</h3>
+              <p class="card-text text-muted" id="email">loading@example.com</p>
+              <p class="card-text" id="phoneNumber">Loading...</p>
+              <div class="mt-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                  <i class="fas fa-edit me-1"></i>Edit Profile
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- Personal Information -->
         <div class="col-md-8">
           <div class="card mb-4">
             <div class="card-header">
               <h4 class="mb-0">Personal Information</h4>
             </div>
             <div class="card-body">
-              <div class="row mb-3">
-                <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6 mb-3">
                   <h6>ID Number</h6>
                   <p id="idNumber" class="text-muted">Loading...</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <h6>Emergency Contact</h6>
                   <p id="emergencyContact" class="text-muted">Loading...</p>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <h6>Insurance Provider</h6>
-                  <p id="insuranceDetails" class="text-muted">Loading...</p>
+                  <p id="insuranceProvider" class="text-muted">Loading...</p>
                 </div>
-                <div class="col-md-6">
-                  <h6>SHA Details</h6>
-                  <p id="shaDetails" class="text-muted">Loading...</p>
+                <div class="col-md-6 mb-3">
+                  <h6>Insurance Number</h6>
+                  <p id="insuranceNumber" class="text-muted">Loading...</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <h6>SHA Membership</h6>
+                  <p id="shaMembership" class="text-muted">Loading...</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <h6>SHA Number</h6>
+                  <p id="shaNumber" class="text-muted">Loading...</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <h4 class="mb-0">Medical History</h4>
-              <button class="btn btn-outline-primary btn-sm">
-                <i class="fas fa-download me-1"></i>Download Records
-              </button>
+          <!-- Medical Information -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h4 class="mb-0">Medical Information</h4>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Facility</th>
-                      <th>Service</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="medicalHistoryTable">
-                    <tr>
-                      <td colspan="4" class="text-center">Loading medical history...</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <h6>Blood Type</h6>
+                  <p id="bloodType" class="text-muted">Loading...</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <h6>Medical Conditions</h6>
+                  <p id="medicalConditions" class="text-muted">Loading...</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <h6>Allergies</h6>
+                  <p id="allergies" class="text-muted">Loading...</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <h6>Medications</h6>
+                  <p id="medications" class="text-muted">Loading...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Emergency Information -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h4 class="mb-0">Emergency Information</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <h6>Next of Kin</h6>
+                  <p id="nextOfKin" class="text-muted">Loading...</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <h6>Relationship</h6>
+                  <p id="relationship" class="text-muted">Loading...</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <h6>Contact Number</h6>
+                  <p id="kinContact" class="text-muted">Loading...</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <h6>Alternative Contact</h6>
+                  <p id="altContact" class="text-muted">Loading...</p>
+                </div>
               </div>
             </div>
           </div>
@@ -143,26 +187,80 @@
     </main>
 
     <!-- Edit Profile Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1">
-      <div class="modal-dialog">
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Edit Profile</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form id="editProfileForm">
-              <div class="mb-3">
-                <label class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" id="editPhone" required>
+              <!-- Personal Information -->
+              <div class="card mb-3">
+                <div class="card-header">
+                  <h5 class="mb-0">Personal Information</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="editPhone" class="form-label">Phone Number</label>
+                      <input type="tel" class="form-control" id="editPhone" placeholder="Enter phone number">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="editEmergencyContact" class="form-label">Emergency Contact</label>
+                      <input type="text" class="form-control" id="editEmergencyContact" placeholder="Enter emergency contact">
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="mb-3">
-                <label class="form-label">Emergency Contact</label>
-                <input type="tel" class="form-control" id="editEmergencyContact" required>
+
+              <!-- Insurance Information -->
+              <div class="card mb-3">
+                <div class="card-header">
+                  <h5 class="mb-0">Insurance Information</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="editInsuranceProvider" class="form-label">Insurance Provider</label>
+                      <input type="text" class="form-control" id="editInsuranceProvider" placeholder="Enter insurance provider">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="editInsuranceNumber" class="form-label">Insurance Number</label>
+                      <input type="text" class="form-control" id="editInsuranceNumber" placeholder="Enter insurance number">
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="mb-3">
-                <label class="form-label">Insurance Details</label>
-                <input type="text" class="form-control" id="editInsurance">
+
+              <!-- Medical Information -->
+              <div class="card mb-3">
+                <div class="card-header">
+                  <h5 class="mb-0">Medical Information</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="editBloodType" class="form-label">Blood Type</label>
+                      <input type="text" class="form-control" id="editBloodType" placeholder="Enter blood type">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="editMedicalConditions" class="form-label">Medical Conditions</label>
+                      <textarea class="form-control" id="editMedicalConditions" rows="2" placeholder="Enter medical conditions"></textarea>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="editAllergies" class="form-label">Allergies</label>
+                      <textarea class="form-control" id="editAllergies" rows="2" placeholder="Enter allergies"></textarea>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="editMedications" class="form-label">Medications</label>
+                      <textarea class="form-control" id="editMedications" rows="2" placeholder="Enter medications"></textarea>
+                    </div>
+                  </div>
+                </div>
               </div>
             </form>
           </div>
@@ -174,76 +272,195 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module">
-      import { AuthService } from '../js/auth-service.js';
+    <!-- Toast Notifications -->
+    <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="fas fa-exclamation-circle text-danger me-2"></i>
+        <strong class="me-auto">Error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        An error occurred. Please try again.
+      </div>
+    </div>
 
-      // Function to load user profile data
+    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="fas fa-check-circle text-success me-2"></i>
+        <strong class="me-auto">Success</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Profile updated successfully!
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      import { AuthService } from '../js/auth-service.js';
+      import { CONFIG } from '../js/config.js';
+      import { Logger } from '../js/services/logger.js';
+
+      const toastBootstrap = {
+          error: new bootstrap.Toast(document.getElementById('errorToast')),
+          success: new bootstrap.Toast(document.getElementById('successToast'))
+      };
+
       async function loadUserProfile() {
-        try {
-          const userData = await AuthService.getUserProfile();
-          
-          // Update profile information
-          document.getElementById('profileName').textContent = `${userData.first_name} ${userData.last_name}`;
-          document.getElementById('profileEmail').textContent = userData.email;
-          document.getElementById('profilePhone').textContent = userData.phone_number || 'No phone number added';
-          document.getElementById('idNumber').textContent = userData.id_number || 'Not provided';
-          document.getElementById('emergencyContact').textContent = userData.emergency_contact || 'Not provided';
-          document.getElementById('insuranceDetails').textContent = userData.insurance_details || 'Not provided';
-          document.getElementById('shaDetails').textContent = userData.sha_details || 'Not provided';
-          
-          if (userData.avatar) {
-            document.getElementById('profileAvatar').src = userData.avatar;
-            document.getElementById('userAvatar').src = userData.avatar;
+          try {
+              document.getElementById('profileLoading').style.display = 'block';
+              
+              const userData = await AuthService.request(
+                  CONFIG.API.ENDPOINTS.AUTH.PROFILE,
+                  'GET',
+                  null,
+                  true
+              );
+
+              // Update profile information
+              document.getElementById('fullName').textContent = `${userData.first_name} ${userData.last_name}`;
+              document.getElementById('email').textContent = userData.email;
+              document.getElementById('phoneNumber').textContent = userData.phone_number || 'Not provided';
+              document.getElementById('idNumber').textContent = userData.id_number || 'Not provided';
+              
+              // Personal Information
+              document.getElementById('emergencyContact').textContent = userData.emergency_contact || 'Not provided';
+              
+              // Insurance Information
+              document.getElementById('insuranceProvider').textContent = userData.insurance_provider || 'Not provided';
+              document.getElementById('insuranceNumber').textContent = userData.insurance_number || 'Not provided';
+              
+              // SHA Information
+              document.getElementById('shaMembership').textContent = userData.sha_membership || 'Not provided';
+              document.getElementById('shaNumber').textContent = userData.sha_number || 'Not provided';
+              
+              // Medical Information
+              document.getElementById('bloodType').textContent = userData.blood_type || 'Not provided';
+              document.getElementById('medicalConditions').textContent = userData.medical_conditions || 'Not provided';
+              document.getElementById('allergies').textContent = userData.allergies || 'Not provided';
+              document.getElementById('medications').textContent = userData.medications || 'Not provided';
+              
+              // Emergency Information
+              document.getElementById('nextOfKin').textContent = userData.next_of_kin || 'Not provided';
+              document.getElementById('relationship').textContent = userData.relationship || 'Not provided';
+              document.getElementById('kinContact').textContent = userData.kin_contact || 'Not provided';
+              document.getElementById('altContact').textContent = userData.alt_contact || 'Not provided';
+              
+              if (userData.avatar) {
+                  document.getElementById('profileAvatar').src = userData.avatar;
+                  document.getElementById('userAvatar').src = userData.avatar;
+              }
+              
+              // Pre-fill edit form
+              document.getElementById('editPhone').value = userData.phone_number || '';
+              document.getElementById('editEmergencyContact').value = userData.emergency_contact || '';
+              document.getElementById('editInsuranceProvider').value = userData.insurance_provider || '';
+              document.getElementById('editInsuranceNumber').value = userData.insurance_number || '';
+              document.getElementById('editBloodType').value = userData.blood_type || '';
+              document.getElementById('editMedicalConditions').value = userData.medical_conditions || '';
+              document.getElementById('editAllergies').value = userData.allergies || '';
+              document.getElementById('editMedications').value = userData.medications || '';
+
+              Logger.log(Logger.INFO, 'Profile loaded successfully', { userId: userData.id });
+              
+          } catch (error) {
+              console.error('Error loading profile:', error);
+              Logger.error('Error loading profile', error);
+              
+              if (error.status === 401) {
+                  toastBootstrap.error.show();
+                  setTimeout(() => {
+                      window.location.href = '/login.html';
+                  }, 2000);
+              } else {
+                  document.getElementById('errorToast').querySelector('.toast-body').textContent = 
+                      error.message || 'Failed to load profile data';
+                  toastBootstrap.error.show();
+              }
+          } finally {
+              document.getElementById('profileLoading').style.display = 'none';
           }
-          
-          // Pre-fill edit form
-          document.getElementById('editPhone').value = userData.phone_number || '';
-          document.getElementById('editEmergencyContact').value = userData.emergency_contact || '';
-          document.getElementById('editInsurance').value = userData.insurance_details || '';
-        } catch (error) {
-          console.error('Error loading profile:', error);
-          alert('Failed to load profile data');
-        }
       }
 
       // Load profile when page loads
-      document.addEventListener('DOMContentLoaded', loadUserProfile);
+      document.addEventListener('DOMContentLoaded', async () => {
+          try {
+              // Check if user is authenticated
+              if (!AuthService.getAuthToken()) {
+                  toastBootstrap.error.show();
+                  setTimeout(() => {
+                      window.location.href = '/login.html';
+                  }, 2000);
+                  return;
+              }
+              
+              await loadUserProfile();
+          } catch (error) {
+              console.error('Error initializing profile page:', error);
+              Logger.error('Error initializing profile page', error);
+              toastBootstrap.error.show();
+          }
+      });
 
       // Handle avatar upload
       document.getElementById('avatarInput').addEventListener('change', async (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          try {
-            const formData = new FormData();
-            formData.append('avatar', file);
-            await AuthService.updateAvatar(formData);
-            loadUserProfile(); // Reload profile to show new avatar
-          } catch (error) {
-            console.error('Error uploading avatar:', error);
-            alert('Failed to upload avatar');
+          const file = event.target.files[0];
+          if (file) {
+              try {
+                  const formData = new FormData();
+                  formData.append('avatar', file);
+                  
+                  await AuthService.request(
+                      CONFIG.API.ENDPOINTS.AUTH.PROFILE,
+                      'PATCH',
+                      formData,
+                      true
+                  );
+                  
+                  await loadUserProfile(); // Reload profile to show new avatar
+                  toastBootstrap.success.show();
+              } catch (error) {
+                  console.error('Error uploading avatar:', error);
+                  Logger.error('Error uploading avatar', error);
+                  document.getElementById('errorToast').querySelector('.toast-body').textContent = 
+                      error.message || 'Failed to upload avatar';
+                  toastBootstrap.error.show();
+              }
           }
-        }
       });
 
-      // Make updateProfile function globally available
-      window.updateProfile = async function() {
-        try {
-          const updatedData = {
-            phone_number: document.getElementById('editPhone').value,
-            emergency_contact: document.getElementById('editEmergencyContact').value,
-            insurance_details: document.getElementById('editInsurance').value
-          };
-          
-          await AuthService.updateProfile(updatedData);
-          loadUserProfile(); // Reload profile data
-          bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
-        } catch (error) {
-          console.error('Error updating profile:', error);
-          alert('Failed to update profile');
-        }
-      };
+      // Update profile function
+      async function updateProfile() {
+          try {
+              const updatedData = {
+                  phone_number: document.getElementById('editPhone').value,
+                  emergency_contact: document.getElementById('editEmergencyContact').value,
+                  insurance_provider: document.getElementById('editInsuranceProvider').value,
+                  insurance_number: document.getElementById('editInsuranceNumber').value,
+                  blood_type: document.getElementById('editBloodType').value,
+                  medical_conditions: document.getElementById('editMedicalConditions').value,
+                  allergies: document.getElementById('editAllergies').value,
+                  medications: document.getElementById('editMedications').value
+              };
+
+              await AuthService.request(
+                  CONFIG.API.ENDPOINTS.AUTH.PROFILE,
+                  'PATCH',
+                  JSON.stringify(updatedData),
+                  true
+              );
+
+              await loadUserProfile(); // Reload profile to show updates
+              toastBootstrap.success.show();
+              bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+          } catch (error) {
+              console.error('Error updating profile:', error);
+              Logger.error('Error updating profile', error);
+              document.getElementById('errorToast').querySelector('.toast-body').textContent = 
+                  error.message || 'Failed to update profile';
+              toastBootstrap.error.show();
+          }
+      }
     </script>
   </body>
 </html>
-

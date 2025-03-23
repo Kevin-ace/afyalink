@@ -230,75 +230,101 @@
         </div>
     </div>
 
+    <!-- Error message display -->
+    <div id="error-message" class="error-message" style="display: none;">
+        <div class="error-content">
+            <span id="error-text"></span>
+            <button onclick="hideErrorMessage()">×</button>
+        </div>
+    </div>
+
     <!-- Leaflet Map Script -->
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
+
         function initMap() {
-            const defaultCenter = [-1.2921, 36.8219]; // Nairobi
-            const map = L.map('map').setView(defaultCenter, 10);
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) {
+                console.error('Map container not found');
+                return;
+            }
 
+            mapContainer.style.height = '500px';
+            
+            if (window.map) {
+                console.log('Map is already initialized');
+                return;
+            }
+
+            window.map = L.map('map').setView([0, 0], 13);
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
+                attribution: ' OpenStreetMap contributors'
+            }).addTo(window.map);
 
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const userLocation = [position.coords.latitude, position.coords.longitude];
-                    map.setView(userLocation, 12);
-                    L.marker(userLocation).addTo(map).bindPopup("You are here").openPopup();
-                    fetchHospitals(userLocation);
-                },
-                () => {
-                    console.warn("Geolocation permission denied. Using default location.");
-                    fetchHospitals(defaultCenter);
+            setTimeout(() => {
+                if (window.map && typeof window.map.invalidateSize === 'function') {
+                    window.map.invalidateSize();
+                    console.log('Map initialized');
                 }
-            );
-
-            function fetchHospitals(location) {
-                fetch(`http://localhost:8000/facilities/facilities?lat=${location[0]}&lng=${location[1]}`)
-                    .then(response => response.json())
-                    .then(data => addHospitalsToMap(data))
-                    .catch(error => console.error('Error fetching hospital data:', error));
-            }
-
-            function addHospitalsToMap(hospitals) {
-                hospitals.forEach(hospital => {
-                    L.marker([hospital.latitude, hospital.longitude]).addTo(map)
-                        .bindPopup(`<b>${hospital.name}</b><br>${hospital.services}`);
-                });
-            }
-
-            // Filter hospitals based on search input
-            document.getElementById('search-input').addEventListener('input', function () {
-                const searchValue = this.value.toLowerCase();
-                const filteredHospitals = hospitals.filter(hospital =>
-                    hospital.name.toLowerCase().includes(searchValue) ||
-                    hospital.services.toLowerCase().includes(searchValue)
-                );
-                map.eachLayer(layer => { if (layer instanceof L.Marker) map.removeLayer(layer); });
-                addHospitalsToMap(filteredHospitals);
-            });
+            }, 100);
         }
-    </script>
-    <script src="../js/leaflet-map.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <script type="module" src="../js/leaflet-map.js"></script>
-    <script>
+
         // Function to fetch and update user info
-        function updateUserInfo() {
-            // Replace this with your actual API endpoint
-            fetch('/api/user-info')
-                .then(response => response.json())
-                .then(user => {
-                    document.getElementById('userName').textContent = user.name;
-                    if (user.avatar) {
-                        document.getElementById('userAvatar').src = user.avatar;
+        async function updateUserInfo() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/auth/profile', {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-                })
-                .catch(error => console.error('Error fetching user info:', error));
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const user = await response.json();
+                // Update UI with user info
+                document.getElementById('user-name').textContent = user.name;
+                document.getElementById('user-email').textContent = user.email;
+                
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+                showError('Failed to load user information. Please try again.');
+            }
         }
 
-        // Call the function when page loads
-        document.addEventListener('DOMContentLoaded', updateUserInfo);
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            
+            if (errorDiv && errorText) {
+                errorText.textContent = message;
+                errorDiv.style.display = 'block';
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    hideErrorMessage();
+                }, 5000);
+            } else {
+                console.error('Error display element not found');
+            }
+        }
+
+        function hideErrorMessage() {
+            const errorDiv = document.getElementById('error-message');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfo();
+        });
     </script>
 
     <!-- Facility Details Template -->

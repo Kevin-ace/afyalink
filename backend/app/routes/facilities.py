@@ -138,7 +138,7 @@ def calculate_distance(lat1, lon1, lat2, lon2):
     
     return distance
 
-@router.get("/insurances", response_model=List[InsuranceResponse])
+@router.get("/insurances", response_model=List[InsuranceResponse], operation_id="list_facilities_insurances")
 def list_insurances(
     db: Session = Depends(get_db),
     type: Optional[str] = Query(None, description="Filter insurances by type"),
@@ -157,7 +157,7 @@ def list_insurances(
     
     return query.all()
 
-@router.get("/facility/{facility_id}/insurances", response_model=List[InsuranceResponse])
+@router.get("/facility/{facility_id}/insurances", response_model=List[InsuranceResponse], operation_id="get_facility_insurances_by_id")
 def get_facility_insurances(facility_id: int, db: Session = Depends(get_db)):
     """Get all insurance providers accepted at a specific facility"""
     facility = db.query(Facility).filter(Facility.id == facility_id).first()
@@ -172,12 +172,3 @@ def get_insurance_facilities(insurance_id: int, db: Session = Depends(get_db)):
     if not insurance:
         raise HTTPException(status_code=404, detail="Insurance not found")
     return insurance.facilities
-
-# Example Flask endpoint
-@router.route('/facilities/facilities')
-def get_facilities():
-    lat = request.args.get('lat')
-    lng = request.args.get('lng')
-    # Implement logic to filter facilities based on lat and lng
-    facilities = filter_facilities_by_location(lat, lng)
-    return jsonify(facilities)

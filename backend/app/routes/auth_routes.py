@@ -1,13 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, File, UploadFile
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional
 from datetime import timedelta, datetime
-import logging
+import logging 
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
-import shutil
 import os
 import aiofiles
 
@@ -16,7 +15,7 @@ from app.models import User
 from app.schemas import UserRegistration, UserCredentials, TokenResponse, UserResponse, Token, ProfileUpdate, ProfileResponse
 from app.auth import (
     create_access_token, 
-    verify_password, 
+    verify_password,    
     get_password_hash,
     authenticate_user,
     get_current_active_user
@@ -99,24 +98,39 @@ async def register_user(user: UserRegistration, db: Session = Depends(get_db)):
             is_active=True,
             created_at=datetime.utcnow()
         )
-        
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        
-        logger.info(f"User registered successfully: {new_user.username}")
-        
-        return UserResponse(**new_user.__dict__)
-    
-    except SQLAlchemyError as db_error:
+
+        # Create access token
+        access_token = create_access_token(
+            data={"sub": new_user.email},
+            expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        )
+
+        # Return response with user data and token
+        return {
+            "id": new_user.id,
+            "username": new_user.username,
+            "email": new_user.email,
+            "first_name": new_user.first_name,
+            "last_name": new_user.last_name,
+            "id_number": new_user.id_number,
+            "emergency_contact": new_user.emergency_contact,
+            "insurance_details": new_user.insurance_details,
+            "sha_details": new_user.sha_details,
+            "is_active": new_user.is_active,
+            "created_at": new_user.created_at,
+            "access_token": access_token,
+            "token_type": "bearer"
+        }
+
+    except SQLAlchemyError as e:
         db.rollback()
-        logger.error(f"Database commit error: {str(db_error)}")
+        logger.error(f"Database error during registration: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
-                "error": "DATABASE_ERROR",
-                "message": "Failed to save user to database"
-            }
+            detail="Database error occurred during registration"
         )
 
 @router.options("/login")
@@ -160,11 +174,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
 @router.options("/register")
 async def register_options():
     return {"allowed": "POST"}
-
-@router.post("/register")
-async def register(user_data: RegisterRequest):
-    # Registration logic here
-    return {"message": "User registered successfully"}
 
 @router.get("/profile", response_model=ProfileResponse)
 async def get_profile(current_user: User = Depends(get_current_active_user)):

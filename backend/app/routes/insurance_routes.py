@@ -56,7 +56,7 @@ def get_insurance(
     
     return insurance
 
-@router.get("/{insurance_id}/facilities", response_model=List[FacilityResponse])
+@router.get("/{insurance_id}/facilities", response_model=List[FacilityResponse], operation_id="get_insurance_accepted_facilities")
 def get_insurance_facilities(
     insurance_id: int = Path(..., description="The ID of the insurance to retrieve facilities for"),
     db: Session = Depends(get_db)

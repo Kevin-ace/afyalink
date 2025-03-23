@@ -1,6 +1,6 @@
 import { AuthService } from './auth-service.js';
 import { Utils } from './utils.js';
-import { DebugLogger } from './error.js';
+import { Logger } from './error.js';
 import './leaflet-map.js'; 
 
 // DOM Elements
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Global event listeners or initializations can go here
-    DebugLogger.log(`Initialized page: ${pageName}`);
+    Logger.log(Logger.INFO, `Initialized page: ${pageName}`);
 });
 
 document.getElementById('loginForm')?.addEventListener('submit', async (event) => {

@@ -1,66 +1,52 @@
+import { ErrorLogger } from '../error.js';
+
 export class Logger {
     static SUCCESS = 'success';
-    static ERROR = 'error';
-    static WARNING = 'warning';
-    static INFO = 'info';
+    static ERROR = ErrorLogger.LEVELS.ERROR;
+    static WARNING = ErrorLogger.LEVELS.WARN;
+    static INFO = ErrorLogger.LEVELS.INFO;
+    static DEBUG = ErrorLogger.LEVELS.DEBUG;
 
     static log(type, message, data = null) {
-        const timestamp = new Date().toISOString();
-        const logEntry = {
-            timestamp,
-            type,
-            message,
-            data
-        };
+        const context = data ? { data } : {};
 
-        // Console logging with styling
         switch (type) {
             case this.SUCCESS:
-                console.log('%c✓ ' + message, 'color: #28a745', data || '');
+                ErrorLogger.info(message, { success: true, ...context });
                 break;
             case this.ERROR:
-                console.error('❌ ' + message, data || '');
+                ErrorLogger.error(message, data instanceof Error ? data : null, context);
                 break;
             case this.WARNING:
-                console.warn('⚠️ ' + message, data || '');
+                ErrorLogger.warn(message, null, context);
                 break;
             case this.INFO:
-                console.info('ℹ️ ' + message, data || '');
+                ErrorLogger.info(message, context);
                 break;
-        }
-
-        // Store in localStorage for persistence
-        this.storeLog(logEntry);
-
-        // If it's an error, you might want to send it to your backend
-        if (type === this.ERROR) {
-            this.sendToServer(logEntry);
+            case this.DEBUG:
+                ErrorLogger.debug(message, context);
+                break;
+            default:
+                ErrorLogger.info(message, context);
         }
     }
 
-    static storeLog(logEntry) {
-        const logs = JSON.parse(localStorage.getItem('app_logs') || '[]');
-        logs.push(logEntry);
-        // Keep only last 100 logs
-        if (logs.length > 100) logs.shift();
-        localStorage.setItem('app_logs', JSON.stringify(logs));
+    static error(message, error = null) {
+        this.log(this.ERROR, message, error);
     }
 
-    static async sendToServer(logEntry) {
-        try {
-            await fetch('http://localhost:8000/logs', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(logEntry)
-            });
-        } catch (error) {
-            console.error('Failed to send log to server:', error);
-        }
+    static warn(message, data = null) {
+        this.log(this.WARNING, message, data);
     }
 
-    static clearLogs() {
-        localStorage.removeItem('app_logs');
+    static info(message, data = null) {
+        this.log(this.INFO, message, data);
     }
-} 
+    static debug(message, data = null) {
+        this.log(this.DEBUG, message, data);
+    }
+
+    static success(message, data = null) {
+        this.log(this.SUCCESS, message, data);
+    }
+}

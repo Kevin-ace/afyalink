@@ -34,12 +34,14 @@ app.add_middleware(
         "http://localhost:63342",  # Your frontend origin
         "http://127.0.0.1:63342",
         "http://localhost:3000",
-        "*",  # Allow all origins for testing
+        "http://localhost:8000",    # Backend itself
+        "*"  # Allow all origins for testing
     ],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
-    expose_headers=["*"]
+    expose_headers=["*"],
+    max_age=600  # Cache preflight response for 10 minutes
 )
 
 # Include route routers
